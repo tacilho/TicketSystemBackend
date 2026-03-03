@@ -1,0 +1,113 @@
+body { 
+    font-family: 'Roboto', sans-serif; 
+    background-color: #ffffff; 
+}
+
+.text-brand { color: #1ea32a !important; }
+.bg-brand { background-color: #1ea32a !important; }
+
+.btn-brand { 
+    background-color: #1ea32a; 
+    color: white; 
+    border: none; 
+    font-weight: 500; 
+}
+.btn-brand:hover { 
+    background-color: #178221; 
+    color: white; 
+}
+
+
+.logo-icon { 
+    transform: rotate(-15deg); 
+    font-size: 2rem; 
+}
+
+.sidebar { 
+    width: 260px; 
+    min-width: 260px; 
+    border-right: 2px solid #efefef; 
+    z-index: 10; 
+}
+
+.nav-link-custom {
+    color: #111; 
+    font-weight: 500; 
+    border: 1px solid #eaeaea; 
+    border-radius: 10px;
+    transition: transform 0.2s, box-shadow 0.2s; 
+    background-color: #fdfdfd;
+}
+.nav-link-custom:hover, .nav-link-custom.active {
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06); 
+    border-color: #ddd; 
+    color: #111;
+}
+.nav-link-custom i { 
+    width: 25px; 
+    text-align: center; 
+    color: #555; 
+}
+
+
+.dashboard-content { 
+    border-top: 2px solid #efefef; 
+}
+
+.filter-select { 
+    background-color: #dbdbdb; 
+    border: none; 
+    font-weight: 700; 
+    font-size: 0.8rem; 
+    border-radius: 4px; 
+}
+
+
+.profile-banner { 
+    height: 120px; 
+    position: relative; 
+    padding-left: 150px; 
+}
+.profile-avatar-box {
+    position: absolute; 
+    left: 40px; 
+    top: 60px; 
+    width: 80px; 
+    height: 80px;
+    background-color: #d9d9d9; 
+    border-radius: 12px; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.table-row {
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr); 
+    text-align: center;
+    align-items: center; 
+    padding: 12px 0;
+}
+.table-header { 
+    border-bottom: 1px solid #eaeaea; 
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    color: #111; 
+    padding-bottom: 15px; 
+    margin-bottom: 10px; 
+}
+.table-data { 
+    font-size: 0.85rem; 
+    color: #333; 
+    font-weight: 500; 
+}
+
+.dot { 
+    width: 8px; 
+    height: 8px; 
+    border-radius: 50%; 
+    display: inline-block; 
+    margin-left: 4px; 
+}
