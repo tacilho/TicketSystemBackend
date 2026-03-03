@@ -64,6 +64,44 @@ body {
 
 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 4px; }
 
+/*Login*/
+.login-bg {
+    /* Imagem placeholder - substitua pela sua imagem local se desejar */
+    background-image: url(./assets/background-login.png);
+    background-size: cover;
+    background-position: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 480px;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    z-index: 1; /* Garante que fique acima do overlay borrado */
+}
+
+.login-input {
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    border-radius: 6px;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.85rem;
+}
+.login-input::placeholder {
+    color: #a0a0a0;
+}
+.login-input:focus {
+    box-shadow: 0 3px 12px rgba(30, 163, 42, 0.15);
+    border-color: #1ea32a;
+    outline: none;
+}
+
+.btn-login {
+    width: 60%; /* Mantém o botão mais estreito que a tela inteira, como no layout */
+    border-radius: 8px;
+    padding: 0.6rem;
+}
+
 /* RESPONSIVIDADE (1366x768 e menores)*/
 @media (max-width: 1399px) {
     /* Menu Lateral */
@@ -85,6 +123,10 @@ body {
     .table-header { font-size: 0.7rem; padding-bottom: 10px; }
     .table-data { font-size: 0.75rem; }
     .table-row { padding: 8px 0; }
+
+    /* Login */
+    .login-card { max-width: 400px; }
+    .btn-login { width: 70%; }
 }
 
 @media (max-height: 768px) {
