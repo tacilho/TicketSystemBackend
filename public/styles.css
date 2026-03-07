@@ -327,12 +327,13 @@
         /* Banner Verde e Perfil */
         .profile-banner {
             background-color: #1ea32a;
-            height: 25vh;
+            height: 15vh;
+            width: auto;
             position: relative;
             display: flex;
             align-items: center;
             padding-left: 140px; /* Espaço para o avatar */
-            border-radius: 15px;
+            border-radius: px;
         }
 
         .profile-name {
@@ -472,3 +473,7 @@
         .dot-yellow { background-color: #f1c40f; }
         .dot-red { background-color: #e74c3c; }
         .dot-green { background-color: #2ecc71; }
+
+        .oculto {
+            display: none !important;
+        }
