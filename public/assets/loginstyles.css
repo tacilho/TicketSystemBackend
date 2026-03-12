@@ -6,9 +6,7 @@
     font-family: 'Roboto', sans-serif;
 }
 
-/* =======================================
-   FUNDO DA TELA DE LOGIN
-======================================= */
+/* FUNDO DA TELA DE LOGIN */
 .login-body {
     position: relative;
     height: 100vh;
@@ -22,20 +20,7 @@
     overflow: hidden;
 }
 
-.login-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(8px);
-    background-color: rgba(255, 255, 255, 0.1);
-    z-index: 1; /* Fica acima da imagem, mas abaixo do card */
-}
-
-/* =======================================
-   CAIXA DE LOGIN (CARD)
-======================================= */
+/* CAIXA DE LOGIN (CARD) */
 .login-card {
     background-color: #ffffff;
     width: 100%;
@@ -55,9 +40,7 @@
     }
 }
 
-/* =======================================
-   LOGO E CABEÇALHO
-======================================= */
+/* LOGO E CABEÇALHO */
 .logo-section {
     display: flex;
     justify-content: center;
@@ -179,7 +162,9 @@
 }
 
 .footer-link {
+    font-size: 0.65rem;
     color: #0d6efd; /* Azul padrão de links */
+    text-align: center;
     text-decoration: none;
     display: inline-block;
     margin-top: 5px;
@@ -189,3 +174,35 @@
 .footer-link:hover {
     text-decoration: underline;
 }
+
+/* REDEFINIÇÃO DE SENHA*/
+.oculto {
+     display: none !important;
+}
+
+.password-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 3; /* Fica acima da imagem, mas abaixo do card */
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}
+
+.password-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 4; /* Fica acima do blur */
+    text-align: center;
+}
+

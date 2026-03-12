@@ -328,12 +328,11 @@
         .profile-banner {
             background-color: #1ea32a;
             height: 15vh;
-            width: auto;
+            min-height: 120px;
             position: relative;
             display: flex;
             align-items: center;
-            padding-left: 140px; /* Espaço para o avatar */
-            border-radius: px;
+            padding-left: 140px; /* Espaço para o    avatar */
         }
 
         .profile-name {
@@ -477,3 +476,61 @@
         .oculto {
             display: none !important;
         }
+
+/* RESPONSIVIDADE (Telas de Notebook / 1366x768 e menores)*/
+@media (max-width: 1399px) {
+    /* Ajustes da barra lateral */
+    .sidebar-container { 
+        width: 220px; 
+        min-width: 220px; 
+    }
+    
+    .nav-item { 
+        padding: 12px 15px; 
+        font-size: 0.9rem; 
+    }
+    
+    /* Ajustes do Banner de Perfil */
+    .profile-banner { 
+        min-height: 100px; 
+        padding-left: 110px; /* Reduz o espaço reservado para o avatar */
+    }
+    
+    .profile-name { 
+        font-size: 1.5rem; 
+    }
+    
+    .profile-avatar-box { 
+        width: 60px; 
+        height: 60px; 
+        top: 20px; /* Centraliza verticalmente o avatar menor */
+        left: 30px; 
+    }
+    
+    .profile-avatar-box i { 
+        font-size: 2.2rem; 
+    }
+    
+    /* Ajustes da Área de Conteúdo */
+    .page-header { 
+        padding: 30px 30px 15px 30px; 
+    }
+    
+    .tickets-container { 
+        padding: 0 30px 30px 30px; 
+        gap: 20px; 
+    }
+    
+    .ticket-card { 
+        padding: 20px 25px; 
+    }
+    
+    /* Ajustes da Tabela */
+    .table-header { 
+        font-size: 0.7rem; 
+    }
+    
+    .table-data { 
+        font-size: 0.75rem; 
+    }
+}
