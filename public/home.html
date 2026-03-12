@@ -1,0 +1,81 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="./assets/pageManager.js"></script>
+    
+    <title>Menu Principal</title>
+  </head>
+  <body>
+    <div class="layout-container">
+        
+        <div class="brand-area">
+            <i class="fa-solid fa-tags logo-icon"></i>
+            <div class="brand-text-container">
+                <div class="brand-title"><strong>Ticket</strong>System</div>
+                <div class="brand-subtitle">Administrator</div>
+            </div>
+        </div>
+
+        <header class="top-header">
+            <button class="btn-green" onclick="abrirTicket()">Abrir Ticket</button>
+            <button class="btn-profile">
+                <i class="fa-regular fa-user-circle"></i>
+                Meu Perfil
+            </button>
+        </header>
+
+        <nav class="sidebar">
+            <a href="#" class="nav-item active">
+                <i class="fa-solid fa-border-all"></i>
+                Dashboard
+            </a>
+            <a href="./tickets.html" class="nav-item">
+                <i class="fa-solid fa-ticket-alt"></i>
+                Tickets
+            </a>
+            <a href="#" class="nav-item" data-nivel="operator">
+                <i class="fa-solid fa-chart-line"></i>
+                Relatórios
+            </a>
+            <a href="#" class="nav-item" data-nivel="admin">
+                <i class="fa-solid fa-gear" ></i>
+                Configurações
+            </a>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="filter-section">
+                <span>Relatório por:</span>
+                <div class="select-wrapper">
+                    <select class="filter-select" id="relatorioFiltro">
+                        <option value="tipo">Tipo de Atendimento</option>
+                        <option value="data">Data de Criação</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                
+                <div class="stat-card">
+                    <div class="stat-value">XX</div>
+                    <div class="stat-label">Tickets<br>Abertos</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">YY</div>
+                    <div class="stat-label">Tickets<br>Pendentes</div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+  </body>
+  </html>
