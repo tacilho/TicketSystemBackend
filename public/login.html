@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketSystem - Login</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="./assets/loginstyles.css">
+</head>
+<body class="login-body">
+
+    <div class="login-overlay"></div>
+
+    <div class="login-card">
+        
+        <div class="logo-section">
+            <i class="fa-solid fa-tags logo-icon"></i>
+            <div class="logo-text">
+                <div class="logo-title"><strong>Ticket</strong>System</div>
+                <div class="logo-subtitle">Administrator</div>
+            </div>
+        </div>
+
+        <h4 class="login-heading">Login</h4>
+
+        <form onsubmit="realizarLogin(event)">
+            
+            <div class="input-group">
+                <label class="input-label">Usuário:</label>
+                <input type="text" class="custom-input" placeholder="Insira seu usuário..." required>
+            </div>
+
+            <div class="input-group group-spaced">
+                <label class="input-label">Senha:</label>
+                <input type="password" class="custom-input" placeholder="Insira sua senha..." required>
+            </div>
+
+            <div class="button-container">
+                <button type="submit" class="btn-submit">Entrar</button>
+            </div>
+
+            <div class="login-footer">
+                <span class="footer-text">Ainda não possui uma conta?</span><br>
+                <a href="#" class="footer-link">Cadastre-se aqui</a>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        function realizarLogin(event) {
+            event.preventDefault(); // Evita o recarregamento da página
+            // Redireciona para o dashboard (home.html)
+            window.location.href = "home.html";
+        }
+    </script>
+</body>
+</html>

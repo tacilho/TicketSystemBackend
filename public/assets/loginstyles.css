@@ -1,0 +1,191 @@
+/* Resets Básicos */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* =======================================
+   FUNDO DA TELA DE LOGIN
+======================================= */
+.login-body {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url(./img/background-login.png);
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.login-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.1);
+    z-index: 1; /* Fica acima da imagem, mas abaixo do card */
+}
+
+/* =======================================
+   CAIXA DE LOGIN (CARD)
+======================================= */
+.login-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 2; /* Fica acima do blur */
+}
+
+/* Telas muito grandes (Ultrawide/Monitores grandes) */
+@media (min-width: 1400px) {
+    .login-card {
+        padding: 50px;
+        max-width: 480px;
+    }
+}
+
+/* =======================================
+   LOGO E CABEÇALHO
+======================================= */
+.logo-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+}
+
+.logo-icon {
+    color: #1ea32a;
+    font-size: 2rem;
+    margin-right: 10px;
+    transform: rotate(-15deg);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.logo-title {
+    color: #1ea32a;
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.logo-subtitle {
+    color: #888;
+    font-size: 0.75rem;
+    margin-top: 5px;
+}
+
+.login-heading {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #222;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+}
+
+/* =======================================
+   FORMULÁRIO (INPUTS E LABELS)
+======================================= */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.group-spaced {
+    margin-bottom: 40px; /* Mais espaço antes do botão */
+}
+
+.input-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 6px;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.02);
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.custom-input::placeholder {
+    color: #a0a0a0;
+}
+
+.custom-input:focus {
+    border-color: #1ea32a;
+    box-shadow: 0 3px 12px rgba(30, 163, 42, 0.15);
+}
+
+/* =======================================
+   BOTÃO E RODAPÉ
+======================================= */
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.btn-submit {
+    background-color: #1ea32a;
+    color: white;
+    border: none;
+    padding: 12px 0;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 60%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #178221;
+}
+
+.login-footer {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.footer-text {
+    color: #222;
+    font-weight: 700;
+}
+
+.footer-link {
+    color: #0d6efd; /* Azul padrão de links */
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+}
