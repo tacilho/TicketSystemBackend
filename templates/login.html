@@ -26,16 +26,16 @@
 
         <h4 class="login-heading">Login</h4>
 
-        <form onsubmit="realizarLogin(event)">
-            
+    <!--Esse linha vai enviar os dados para a login-->
+        <form method="POST" action="/login">
             <div class="input-group">
                 <label class="input-label">Usuário:</label>
-                <input type="text" class="custom-input" placeholder="Insira seu usuário..." required>
+                <input type="text" class="custom-input" name="login" placeholder="Insira seu usuário..." required>
             </div>
 
             <div class="input-group group-spaced">
                 <label class="input-label">Senha:</label>
-                <input type="password" class="custom-input" placeholder="Insira sua senha..." required>
+                <input type="password" class="custom-input" name='senha' placeholder="Insira sua senha..." required>
             </div>
 
             <div class="button-container">

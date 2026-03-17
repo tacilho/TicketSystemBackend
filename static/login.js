@@ -11,3 +11,5 @@ function passwordReset(event) {
     alert('E-mail de recuperação enviado!');
     closePasswordReset(); 
 }
+
+
