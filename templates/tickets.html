@@ -5,129 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TicketSystem - Tickets</title>
     
-    <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}">
-    <script src="./assets/pageManager.js"></script>
-    
+    <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
+
 </head>
-<body>
+<body style="background-color: #f5f5f5;">
     <div class="layout-container">
         
-        <div class="brand-area">
-            <i class="fa-solid fa-tags logo-icon"></i>
-            <div class="brand-text-container">
-                <div class="brand-title"><strong>Ticket</strong>System</div>
-                <div class="brand-subtitle">Administrator</div>
+        <nav class="sidebar-modern">
+            <div class="brand-area-modern">
+                <i class="fa-solid fa-tags logo-icon"></i>
+                <div class="brand-text-container">
+                    <div class="brand-title"><strong>Ticket</strong>System</div>
+                    <div class="brand-subtitle">Administrator</div>
+                </div>
             </div>
-        </div>
 
-        <nav class="sidebar">
-            <a href="./home.html" class="nav-item">
-                <i class="fa-solid fa-border-all"></i>
-                Dashboard
-            </a>
-            <a href="./tickets.html" class="nav-item active">
-                <i class="fa-solid fa-ticket-alt"></i>
-                Tickets
-            </a>
-            <a href="#" class="nav-item" data-nivel="operator">
-                <i class="fa-solid fa-chart-line"></i>
-                Relatórios
-            </a>
-            <a href="#" class="nav-item" data-nivel="admin">
-                <i class="fa-solid fa-gear"></i>
-                Configurações
-            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-item-modern">
+                    <i class="fa-solid fa-border-all"></i> Dashboard
+                </a>
+                <a href="{{ url_for('tickets') }}" class="nav-item-modern active">
+                    <i class="fa-solid fa-ticket-alt"></i> Tickets
+                </a>
+                <a href="#" class="nav-item-modern" data-nivel="operator">
+                    <i class="fa-solid fa-chart-line"></i> Relatórios
+                </a>
+                <a href="#" class="nav-item-modern" data-nivel="admin">
+                    <i class="fa-solid fa-gear"></i> Configurações
+                </a>
+            </div>
         </nav>
 
-        <main class="main-content" style="grid-row: 1 / 3; border-top: none;">
+        <main class="main-content-modern">
             
-            <div class="profile-banner" style="margin: -30px -40px 0 -40px; border-radius: 0;">
-                <div class="profile-avatar-box">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="profile-name">Nome do Perfil</div>
+            <div class="top-banner-green">
+                <h2>Tickets <i class="fa-solid fa-ticket"></i></h2>
             </div>
 
-            <div class="page-header" style="padding: 30px 0 20px 0;">
-                <div class="page-title">
-                    Tickets <i class="fa-solid fa-ticket"></i>
-                </div>
-            </div>
-
-            <div class="tickets-container" style="padding: 0;">
-
-                <div class="ticket-card">
-                    <h3 class="ticket-card-title">Abertos</h3>
-                    <div class="ticket-table">
-                        <div class="table-row table-header">
-                            <span>Cliente</span>
-                            <span>Assunto</span>
-                            <span>Status</span>
-                            <span>Prioridade</span>
-                            <span>Data de Início</span>
-                            <span>Data de Conclusão</span>
-                            <span>Ultima Atualização</span>
-                        </div>
-                        <div class="table-row table-data">
-                            <span>Jair Bolsonaro</span>
-                            <span>Queda da Rede</span>
-                            <span class="status-badge">Aberto <span class="dot dot-blue"></span></span>
-                            <span class="status-badge">Média <span class="dot dot-yellow"></span></span>
-                            <span>22/01/2026</span>
-                            <span>--</span>
-                            <span>22/01/2026</span>
-                        </div>
+            <div class="workspace-split">
+                
+                <div class="left-panel">
+                    <div class="tabs-container">
+                        <button class="tab-btn active" id="btnAguardando" onclick="mudarAba('aguardando')">Aguardando</button>
+                        <button class="tab-btn" id="btnAtendimento" onclick="mudarAba('em_atendimento')">Em atendimento</button>
                     </div>
+
+                    <div class="ticket-list" id="ticketList">
+                        </div>
                 </div>
 
-                <div class="ticket-card">
-                    <h3 class="ticket-card-title">Pendentes</h3>
-                    <div class="ticket-table">
-                        <div class="table-row table-header">
-                            <span>Cliente</span>
-                            <span>Assunto</span>
-                            <span>Status</span>
-                            <span>Prioridade</span>
-                            <span>Data de Início</span>
-                            <span>Data de Conclusão</span>
-                            <span>Ultima Atualização</span>
+                <div class="vertical-divider"></div>
+
+                <div class="right-panel">
+                    <div class="ticket-details-card" id="ticketDetailsView" style="display: none;">
+                        
+                        <div class="details-header">
+                            <div>
+                                <h3 id="detalheTitulo" class="detalhe-titulo">Título #000</h3>
+                            </div>
+                            <div id="detalheCliente" class="detalhe-cliente">Nome do Cliente</div>
                         </div>
-                        <div class="table-row table-data">
-                            <span>Jair Bolsonaro</span>
-                            <span>Queda da Rede</span>
-                            <span class="status-badge">Pendente <span class="dot dot-yellow"></span></span>
-                            <span class="status-badge">Alta <span class="dot dot-red"></span></span>
-                            <span>22/01/2026</span>
-                            <span>--</span>
-                            <span>22/01/2026</span>
+
+                        <div class="details-body">
+                            <textarea id="detalheDescricao" class="descricao-box" readonly></textarea>
                         </div>
+
+                        <div class="details-footer" id="detailsFooter">
+                            </div>
+
                     </div>
-                </div>
-
-                <div class="ticket-card">
-                    <h3 class="ticket-card-title">Finalizados</h3>
-                    <div class="ticket-table">
-                        <div class="table-row table-header">
-                            <span>Cliente</span>
-                            <span>Assunto</span>
-                            <span>Status</span>
-                            <span>Prioridade</span>
-                            <span>Data de Início</span>
-                            <span>Data de Conclusão</span>
-                            <span>Ultima Atualização</span>
-                        </div>
-                        <div class="table-row table-data">
-                            <span>Jair Bolsonaro</span>
-                            <span>Queda da Rede</span>
-                            <span class="status-badge">Concluído <span class="dot dot-green"></span></span>
-                            <span class="status-badge">Baixa <span class="dot dot-blue"></span></span>
-                            <span>22/01/2026</span>
-                            <span>24/01/2026</span>
-                            <span>22/01/2026</span>
-                        </div>
+                    
+                    <div id="emptyState" class="empty-state">
+                        <i class="fa-solid fa-hand-pointer"></i>
+                        <p>Selecione um ticket ao lado para visualizar os detalhes.</p>
                     </div>
                 </div>
 
@@ -136,9 +89,109 @@
     </div>
 
     <script>
-        function abrirTicket() {
-            alert('Ação disparada: Abrir Ticket!');
+        // Simulando banco de dados de tickets na memória
+        let ticketsDb = [
+            { id: 101, cliente: "Jair Bolsonaro", titulo: "Queda da Rede", descricao: "A internet caiu no setor de faturamento. Computadores sem acesso ao sistema local.", status: "aguardando" },
+            { id: 102, cliente: "Maria Silva", titulo: "Impressora com Erro", descricao: "A impressora do RH está atolando papel toda vez que tentamos imprimir o espelho de ponto.", status: "aguardando" },
+            { id: 103, cliente: "João Pedro", titulo: "Acesso Negado", descricao: "Não consigo fazer login no sistema ERP, diz que a senha expirou.", status: "em_atendimento" }
+        ];
+
+        let abaAtual = 'aguardando';
+        let ticketSelecionado = null;
+
+        // Função para alternar entre as abas
+        function mudarAba(aba) {
+            abaAtual = aba;
+            ticketSelecionado = null; // Reseta a seleção
+            
+            // Atualiza botões
+            document.getElementById('btnAguardando').classList.toggle('active', aba === 'aguardando');
+            document.getElementById('btnAtendimento').classList.toggle('active', aba === 'em_atendimento');
+            
+            esconderDetalhes();
+            renderizarLista();
         }
+
+        // Desenha a lista de tickets na esquerda
+        function renderizarLista() {
+            const container = document.getElementById('ticketList');
+            container.innerHTML = '';
+
+            const filtrados = ticketsDb.filter(t => t.status === abaAtual);
+
+            filtrados.forEach(ticket => {
+                const isActive = ticketSelecionado === ticket.id ? 'active' : '';
+                const corPonto = abaAtual === 'aguardando' ? '#1ea32a' : '#f1c40f'; // Verde ou Amarelo
+
+                const card = `
+                    <div class="ticket-list-card ${isActive}" onclick="abrirDetalhes(${ticket.id})">
+                        <div class="card-topo">
+                            <span class="dot" style="background-color: ${corPonto};"></span>
+                            <span class="card-cliente">${ticket.cliente}</span>
+                        </div>
+                        <hr class="card-linha">
+                        <div class="card-titulo">${ticket.titulo}</div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // Abre as informações no painel direito
+        function abrirDetalhes(id) {
+            ticketSelecionado = id;
+            const ticket = ticketsDb.find(t => t.id === id);
+            
+            // Esconde a mensagem vazia e mostra o card
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('ticketDetailsView').style.display = 'flex';
+            
+            // Preenche os dados
+            document.getElementById('detalheTitulo').textContent = `${ticket.titulo} #${ticket.id}`;
+            document.getElementById('detalheCliente').textContent = ticket.cliente;
+            document.getElementById('detalheDescricao').value = ticket.descricao;
+
+            // Renderiza o rodapé correto (Botão verde ou Campo de enviar mensagem)
+            const footer = document.getElementById('detailsFooter');
+            if (ticket.status === 'aguardando') {
+                footer.innerHTML = `
+                    <button class="btn-aceitar" onclick="aceitarTicket(${ticket.id})">Aceitar Chamado</button>
+                `;
+                footer.style.justifyContent = 'center';
+            } else {
+                footer.innerHTML = `
+                    <div class="comentario-wrapper">
+                        <input type="text" class="input-comentario" placeholder="Adicionar comentário...">
+                        <button class="btn-enviar" onclick="enviarComentario()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                `;
+                footer.style.justifyContent = 'flex-start';
+            }
+
+            renderizarLista(); // Re-renderiza para aplicar a borda cinza no selecionado
+        }
+
+        // Função de Aceitar Chamado
+        function aceitarTicket(id) {
+            const ticket = ticketsDb.find(t => t.id === id);
+            if(ticket) {
+                ticket.status = 'em_atendimento'; // Muda o status
+                mudarAba('em_atendimento'); // Joga o usuário para a outra aba para ele ver o ticket lá
+            }
+        }
+
+        function enviarComentario() {
+            alert('Comentário enviado com sucesso!');
+            // Aqui futuramente você conectará ao Flask via Fetch/AJAX para salvar no banco.
+        }
+
+        function esconderDetalhes() {
+            document.getElementById('emptyState').style.display = 'flex';
+            document.getElementById('ticketDetailsView').style.display = 'none';
+        }
+
+        // Inicializa a tela
+        window.onload = () => renderizarLista();
     </script>
 </body>
 </html>

@@ -477,6 +477,216 @@
             display: none !important;
         }
 
+    /* =========================================
+   TELA DE TICKETS (DESIGN DIVIDIDO NOVO)
+========================================= */
+
+/* Sidebar Moderna (Baseada na imagem) */
+.sidebar-modern {
+    grid-column: 1;
+    grid-row: 1 / 3; /* <--- O segredo está aqui: diz para ocupar do topo à base */
+    background-color: #ffffff;
+    width: 100%; /* Ajustado para respeitar os 240px do grid principal */
+    height: 100vh;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+.brand-area-modern {
+    padding: 30px 20px;
+    display: flex;
+    align-items: center;
+}
+.nav-links {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.nav-item-modern {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Sombra elegante */
+    background-color: #fff;
+    border: 1px solid #f0f0f0;
+    transition: all 0.2s;
+}
+.nav-item-modern.active {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+.nav-item-modern i { width: 20px; text-align: center; color: #555; }
+
+/* Estrutura Principal */
+.main-content-modern {
+    grid-column: 2;
+    grid-row: 1 / 3; /* <--- Puxa o conteúdo para o topo, engolindo o espaço branco */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #fdfdfd;
+}
+
+/* Banner Verde Superior */
+.top-banner-green {
+    background-color: #1ea32a;
+    color: white;
+    padding: 25px 40px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+}
+.top-banner-green h2 { font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; gap: 10px; margin: 0; }
+
+/* Workspace Dividido */
+.workspace-split {
+    display: flex;
+    flex: 1;
+    padding: 30px 40px;
+    gap: 30px;
+    height: calc(100vh - 100px);
+    overflow: hidden;
+}
+
+/* Painel Esquerdo (Lista) */
+.left-panel { width: 350px; display: flex; flex-direction: column; }
+.tabs-container { display: flex; gap: 15px; margin-bottom: 25px; }
+
+.tab-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: 1px solid #1ea32a;
+    transition: all 0.2s;
+}
+.tab-btn.active { background-color: #1ea32a; color: white; }
+.tab-btn:not(.active) { background-color: transparent; color: #1ea32a; }
+
+.ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+    padding-right: 10px; /* Espaço para barra de rolagem */
+}
+
+/* Cards da Lista */
+.ticket-list-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: all 0.2s;
+}
+.ticket-list-card:hover { border-color: #bdbdbd; }
+.ticket-list-card.active { border: 2px solid #ccc; background-color: #fcfcfc; }
+
+.card-topo { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.card-cliente { font-weight: 700; font-size: 0.95rem; color: #111; }
+.card-linha { border: 0; height: 1px; background-color: #eee; margin: 5px 0 10px 0; }
+.card-titulo { font-size: 0.85rem; color: #666; font-weight: 500; }
+
+/* Divisória Vertical */
+.vertical-divider { width: 1px; background-color: #e0e0e0; height: 100%; }
+
+/* Painel Direito (Detalhes) */
+.right-panel { flex: 1; display: flex; flex-direction: column; }
+
+.ticket-details-card {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    height: 100%;
+}
+
+.details-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px;}
+.detalhe-titulo { font-size: 1.3rem; font-weight: 700; color: #111; margin: 0; }
+.detalhe-cliente { font-size: 0.95rem; font-weight: 600; color: #333; }
+
+.details-body { flex: 1; margin-bottom: 20px; }
+.descricao-box {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    color: #555;
+    font-size: 0.95rem;
+    resize: none;
+    outline: none;
+}
+
+/* Área inferior do Card (Botão ou Input) */
+.details-footer { display: flex; width: 100%; }
+
+.btn-aceitar {
+    background-color: #1ea32a;
+    color: white;
+    font-weight: 700;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.btn-aceitar:hover { background-color: #178221; }
+
+.comentario-wrapper {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+}
+.input-comentario {
+    flex: 1;
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    border-radius: 8px;
+    outline: none;
+}
+.btn-enviar {
+    background-color: #1ea32a;
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* Estado Vazio (Nenhum ticket selecionado) */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #999;
+}
+.empty-state i { font-size: 3rem; margin-bottom: 15px; color: #ccc; }
+
 /* RESPONSIVIDADE (Telas de Notebook / 1366x768 e menores)*/
 @media (max-width: 1399px) {
     /* Ajustes da barra lateral */
