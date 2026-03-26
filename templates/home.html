@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
-    <script src="./assets/pageManager.js"></script>
+    <script src="{{ url_for('static' , filename='pageManager.js')}}"></script>
     
     <title>Menu Principal</title>
   </head>
@@ -31,7 +31,7 @@
         </header>
 
         <nav class="sidebar">
-            <a href="#" class="nav-item active">
+            <a href="#" class="nav-item active" data-nivel="operator">
                 <i class="fa-solid fa-border-all"></i>
                 Dashboard
             </a>
@@ -76,6 +76,31 @@
             </div>
 
         </main>
+
+
+        <div id="modalAbrirTicket" class="modal-overlay oculto">
+            <div class="modal-card">
+                <h2 class="modal-title">Abrir Ticket</h2>
+                
+                <form onsubmit="salvarNovoTicket(event)">
+                    <div class="input-group">
+                        <label class="modal-label">Título</label>
+                        <input type="text" id="novoTicketTitulo" class="modal-input" placeholder="Insira o seu principal problema..." required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="modal-label">Descrição</label>
+                        <textarea id="novoTicketDescricao" class="modal-textarea" rows="6" placeholder="Descreva seu problema aqui..." required></textarea>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancelar" onclick="fecharModalTicket()">Cancelar</button>
+                        <button type="submit" class="btn-confirmar">Abrir Ticket</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
     </div>
   </body>
   </html>

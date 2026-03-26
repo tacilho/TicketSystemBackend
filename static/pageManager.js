@@ -52,8 +52,14 @@ class PermissionManager{
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const currentUser = new User('Pedro', 'operator');
+    window.currentUser = new User('Pedro', 'user');
 
-    const uiManager = new PermissionManager(currentUser);
+    const uiManager = new PermissionManager(window.currentUser);
     uiManager.applyRestrictions();
+
+    if (typeof renderizarLista === 'function') {
+        renderizarLista();
+    }
 })
+
+

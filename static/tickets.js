@@ -22,34 +22,62 @@
         }
 
         // Desenha a lista de tickets na esquerda
-        function renderizarLista() {
-            const container = document.getElementById('ticketList');
-            container.innerHTML = '';
+function renderizarLista() {
+    const container = document.getElementById('ticketList');
+    if (!container) return;
+    
+    // Olha para o usuário do pageManager
+    const isUser = window.currentUser && window.currentUser.level === 'user';
+    const nomeCliente = window.currentUser ? window.currentUser.name : 'Visitante';
+    
+    // Captura elementos
+    const workspace = document.getElementById('workspaceSplit');
+    const msgVazia = document.getElementById('noTicketsMessage');
 
-            const filtrados = ticketsDb.filter(t => t.status === abaAtual);
+    // 2. Filtragem de Tickets
+    let filtrados = [];
+    if (isUser) {
+        // Usa o nome 'Pedro' para filtrar
+        filtrados = ticketsDb.filter(t => t.cliente === nomeCliente);
+    } else {
+        filtrados = ticketsDb.filter(t => t.status === abaAtual);
+    }
 
-            filtrados.forEach(ticket => {
-                const isActive = ticketSelecionado === ticket.id ? 'active' : '';
-                const corPonto = abaAtual === 'aguardando' ? '#1ea32a' : '#f1c40f'; // Verde ou Amarelo
+    // 3. Controle da Tela Vazia
+    if (isUser && filtrados.length === 0) {
+        workspace.style.display = 'none';
+        msgVazia.classList.remove('oculto');
+        return;
+    } else {
+        workspace.style.display = 'flex';
+        msgVazia.classList.add('oculto');
+    }
 
-                const card = `
-                    <div class="ticket-list-card ${isActive}" onclick="abrirDetalhes(${ticket.id})">
-                        <div class="card-topo">
-                            <span class="dot" style="background-color: ${corPonto};"></span>
-                            <span class="card-cliente">${ticket.cliente}</span>
-                        </div>
-                        <hr class="card-linha">
-                        <div class="card-titulo">${ticket.titulo}</div>
-                    </div>
-                `;
-                container.innerHTML += card;
-            });
-        }
+    // 4. Desenha a Lista
+    container.innerHTML = '';
+    filtrados.forEach(ticket => {
+        const isActive = ticketSelecionado === ticket.id ? 'active' : '';
+        const corPonto = ticket.status === 'aguardando' ? '#1ea32a' : '#f1c40f';
+
+        const card = `
+            <div class="ticket-list-card ${isActive}" onclick="abrirDetalhes(${ticket.id})">
+                <div class="card-topo">
+                    <span class="dot" style="background-color: ${corPonto};"></span>
+                    <span class="card-cliente">${ticket.cliente}</span>
+                </div>
+                <hr class="card-linha">
+                <div class="card-titulo">${ticket.titulo}</div>
+            </div>
+        `;
+        container.innerHTML += card;
+    });
+}
+
 
         // Abre as informações no painel direito
-        function abrirDetalhes(id) {
-            ticketSelecionado = id;
-            const ticket = ticketsDb.find(t => t.id === id);
+function abrirDetalhes(id) {
+        ticketSelecionado = id;
+        const ticket = ticketsDb.find(t => t.id === id);
             
             // Esconde a mensagem vazia e mostra o card
             document.getElementById('emptyState').style.display = 'none';
@@ -81,23 +109,74 @@
         }
 
         // Função de Aceitar Chamado
-        function aceitarTicket(id) {
-            const ticket = ticketsDb.find(t => t.id === id);
-            if(ticket) {
-                ticket.status = 'em_atendimento'; // Muda o status
-                mudarAba('em_atendimento'); // Joga o usuário para a outra aba para ele ver o ticket lá
-            }
+function aceitarTicket(id) {
+    const ticket = ticketsDb.find(t => t.id === id);
+    if(ticket) {
+            ticket.status = 'em_atendimento'; // Muda o status
+            mudarAba('em_atendimento'); // Joga o usuário para a outra aba para ele ver o ticket lá
         }
+    }
 
-        function enviarComentario() {
-            alert('Comentário enviado com sucesso!');
-            // Aqui futuramente você conectará ao Flask via Fetch/AJAX para salvar no banco.
-        }
+function enviarComentario() {
+    alert('Comentário enviado com sucesso!');
+    // Aqui futuramente você conectará ao Flask via Fetch/AJAX para salvar no banco.
+}
 
-        function esconderDetalhes() {
-            document.getElementById('emptyState').style.display = 'flex';
-            document.getElementById('ticketDetailsView').style.display = 'none';
-        }
+function esconderDetalhes() {
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('ticketDetailsView').style.display = 'none';
+}
 
-        // Inicializa a tela
-        window.onload = () => renderizarLista();
+// Inicializa a tela
+window.onload = () => renderizarLista();
+
+function abrirTicket() {
+    const modal = document.getElementById('modalAbrirTicket');
+    if (modal) {
+        modal.classList.remove('oculto');
+    }
+}
+
+// Fecha o Modal
+function fecharModalTicket() {
+    const modal = document.getElementById('modalAbrirTicket');
+    if (modal) {
+        modal.classList.add('oculto');
+    }
+}
+
+// Salva o Ticket (Simulação)
+function salvarNovoTicket(event) {
+    event.preventDefault(); // Evita recarregar a página
+    
+    // Captura o que o usuário digitou
+    const titulo = document.getElementById('novoTicketTitulo').value;
+    const descricao = document.getElementById('novoTicketDescricao').value;
+    
+    // Se o usuário estiver na tela de Tickets (onde a variável ticketsDb existe),
+    // nós inserimos o ticket novo na lista na mesma hora!
+    if (typeof ticketsDb !== 'undefined' && typeof mudarAba === 'function') {
+        const novoId = ticketsDb.length > 0 ? ticketsDb[ticketsDb.length - 1].id + 1 : 100;
+        const nomeCliente = window.currentUser ? window.currentUser.name : 'Cliente Web';
+        
+        // Adiciona na simulação de banco de dados
+        ticketsDb.push({
+            id: novoId,
+            cliente: nomeCliente,
+            titulo: titulo,
+            descricao: descricao,
+            status: 'aguardando'
+        });
+        
+        // Atualiza a tela para a aba "Aguardando" para ele ver o ticket novo
+        mudarAba('aguardando');
+    } else {
+        // Se estiver em outra tela (como a Dashboard), apenas avisa que deu certo
+        alert(`Ticket "${titulo}" aberto com sucesso! Nossa equipe analisará em breve.`);
+    }
+    
+    // Limpa os campos do formulário e fecha o popup
+    event.target.reset();
+    fecharModalTicket();
+}
+        

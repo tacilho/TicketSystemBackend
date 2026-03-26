@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <script src="{{ url_for('static', filename='tickets.js') }}"></script>
+    <script src="{{ url_for('static', filename='pageManager.js') }}"></script>
 
 </head>
 <body style="background-color: #f5f5f5;">
@@ -25,7 +26,7 @@
             </div>
 
             <div class="nav-links">
-                <a href="{{ url_for('home') }}" class="nav-item-modern">
+                <a href="{{ url_for('home') }}" class="nav-item-modern" data-nivel="operator">
                     <i class="fa-solid fa-border-all"></i> Dashboard
                 </a>
                 <a href="{{ url_for('tickets') }}" class="nav-item-modern active">
@@ -45,24 +46,33 @@
             <div class="top-banner-green">
                 <h2>Tickets <i class="fa-solid fa-ticket"></i></h2>
             </div>
+            
+            <div class="client-header oculto" id="headerCliente">
+                <button class="btn-green" onclick="abrirTicket()">Abrir Ticket</button>
+                <button class="btn-profile">
+                    <i class="fa-regular fa-user-circle"></i> Meu Perfil
+                </button>
+            </div>
 
-            <div class="workspace-split">
+            <div id="noTicketsMessage" class="oculto" style="display: flex; flex: 1; justify-content: center; align-items: center; color: #666; font-weight: 500; font-size: 1.1rem; height: calc(100vh - 100px);">
+                Você não possui nenhum Ticket
+            </div>
+
+            <div class="workspace-split" id="workspaceSplit">
                 
                 <div class="left-panel">
-                    <div class="tabs-container">
+                    <div class="tabs-container" data-nivel="operator">
                         <button class="tab-btn active" id="btnAguardando" onclick="mudarAba('aguardando')">Aguardando</button>
                         <button class="tab-btn" id="btnAtendimento" onclick="mudarAba('em_atendimento')">Em atendimento</button>
                     </div>
 
-                    <div class="ticket-list" id="ticketList">
-                        </div>
+                    <div class="ticket-list" id="ticketList"></div>
                 </div>
 
                 <div class="vertical-divider"></div>
 
                 <div class="right-panel">
                     <div class="ticket-details-card" id="ticketDetailsView" style="display: none;">
-                        
                         <div class="details-header">
                             <div>
                                 <h3 id="detalheTitulo" class="detalhe-titulo">Título #000</h3>
@@ -74,9 +84,7 @@
                             <textarea id="detalheDescricao" class="descricao-box" readonly></textarea>
                         </div>
 
-                        <div class="details-footer" id="detailsFooter">
-                            </div>
-
+                        <div class="details-footer" id="detailsFooter"></div>
                     </div>
                     
                     <div id="emptyState" class="empty-state">
@@ -84,9 +92,34 @@
                         <p>Selecione um ticket ao lado para visualizar os detalhes.</p>
                     </div>
                 </div>
-
             </div>
         </main>
+
+        
+
+        <div id="modalAbrirTicket" class="modal-overlay oculto">
+            <div class="modal-card">
+                <h2 class="modal-title">Abrir Ticket</h2>
+                
+                <form onsubmit="salvarNovoTicket(event)">
+                    <div class="input-group">
+                        <label class="modal-label">Título</label>
+                        <input type="text" id="novoTicketTitulo" class="modal-input" placeholder="Insira o seu principal problema..." required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="modal-label">Descrição</label>
+                        <textarea id="novoTicketDescricao" class="modal-textarea" rows="6" placeholder="Descreva seu problema aqui..." required></textarea>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancelar" onclick="fecharModalTicket()">Cancelar</button>
+                        <button type="submit" class="btn-confirmar">Abrir Ticket</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 </body>
 </html>
