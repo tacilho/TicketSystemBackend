@@ -121,15 +121,6 @@ function abrirDetalhes(id) {
             `;
             footer.style.justifyContent = 'center';
             
-        } else {
-            // 3. SE FOR ADMIN/OPERADOR e já estiver em atendimento: Mostra comentários
-            footer.innerHTML = `
-                <div class="comentario-wrapper">
-                    <input type="text" class="input-comentario" placeholder="Adicionar comentário...">
-                    <button class="btn-enviar" onclick="enviarComentario()"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-            `;
-            footer.style.justifyContent = 'flex-start';
         }
     }
 
