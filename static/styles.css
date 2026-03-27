@@ -536,6 +536,7 @@
     display: flex;
     flex-direction: column;
     background-color: #fdfdfd;
+    position: relative;
 }
 
 /* Banner Verde Superior */
@@ -794,57 +795,6 @@
 /* =========================================
    TELA DE TICKETS (DESIGN COMBINADO NOVO)
 ========================================= */
-
-/* Sidebar Moderna e Estrutura Principal permanecem... */
-
-/* Banner Verde Superior (Sem alterações, mas garantimos a altura fixa) */
-.top-banner-green {
-    background-color: #1ea32a;
-    color: white;
-    padding: 25px 40px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-}
-.top-banner-green h2 { font-size: 1.8rem; font-weight: 700; display: flex; align-items: center; gap: 10px; margin: 0; }
-
-/* Workspace Dividido e Painéis permanecem... */
-
-/* Redefinição do Cabeçalho do Cliente para sobrepor */
-.client-header {
-    position: absolute;  /* Para sobrepor */
-    top: 0;
-    right: 40px;         /* Alinhado com o padding do banner */
-    height: 100px;       /* Mesma altura do banner verde */
-    display: flex;
-    align-items: center; /* Centralizar verticalmente os botões */
-    justify-content: flex-end; /* Alinhar botões à direita */
-    gap: 15px;
-    background-color: transparent; /* SEM FUNDO BRANCO */
-    border: none;                  /* SEM BORDA */
-}
-
-/* Transformação dos Botões Vazados do Cliente (Sobre o Verde) */
-.btn-green, .btn-profile {
-    background-color: transparent; /* Fundo transparente */
-    color: #fff;                   /* Texto branco solto */
-    border: 2px solid #fff;        /* Borda branca solta */
-    padding: 10px 24px;
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: none;              /* SEM SOMBRA */
-}
-
-.btn-green:hover, .btn-profile:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Efeito suave de hover */
-}
-
-.btn-profile i {
-    color: #fff; /* Ícone branco */
-}
 
 /* RESPONSIVIDADE (Telas de Notebook / 1366x768 e menores)*/
 @media (max-width: 1399px) {

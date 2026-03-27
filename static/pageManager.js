@@ -52,7 +52,7 @@ class PermissionManager{
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    window.currentUser = new User('Pedro', 'user');
+    window.currentUser = new User('Pedro', 'operator');
 
     const uiManager = new PermissionManager(window.currentUser);
     uiManager.applyRestrictions();

@@ -22,6 +22,7 @@
         }
 
         // Desenha a lista de tickets na esquerda
+// Desenha a lista de tickets na esquerda
 function renderizarLista() {
     const container = document.getElementById('ticketList');
     if (!container) return;
@@ -31,13 +32,25 @@ function renderizarLista() {
     const nomeCliente = window.currentUser ? window.currentUser.name : 'Visitante';
     
     // Captura elementos
+    const headerCliente = document.getElementById('headerCliente');
     const workspace = document.getElementById('workspaceSplit');
     const msgVazia = document.getElementById('noTicketsMessage');
+
+    // ==========================================
+    // Controle Visual do Cabeçalho do Cliente
+    // ==========================================
+    if (headerCliente) {
+        if (isUser) {
+            headerCliente.classList.remove('oculto');
+        } else {
+            headerCliente.classList.add('oculto');
+        }
+    }
 
     // 2. Filtragem de Tickets
     let filtrados = [];
     if (isUser) {
-        // Usa o nome 'Pedro' para filtrar
+        // Usa o nome para filtrar (Ex: 'Pedro')
         filtrados = ticketsDb.filter(t => t.cliente === nomeCliente);
     } else {
         filtrados = ticketsDb.filter(t => t.status === abaAtual);
@@ -73,40 +86,55 @@ function renderizarLista() {
     });
 }
 
-
-        // Abre as informações no painel direito
+// Abre as informações no painel direito
 function abrirDetalhes(id) {
-        ticketSelecionado = id;
-        const ticket = ticketsDb.find(t => t.id === id);
-            
-            // Esconde a mensagem vazia e mostra o card
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('ticketDetailsView').style.display = 'flex';
-            
-            // Preenche os dados
-            document.getElementById('detalheTitulo').textContent = `${ticket.titulo} #${ticket.id}`;
-            document.getElementById('detalheCliente').textContent = ticket.cliente;
-            document.getElementById('detalheDescricao').value = ticket.descricao;
+    ticketSelecionado = id;
+    const ticket = ticketsDb.find(t => t.id === id);
+    
+    // Esconde a mensagem vazia e mostra o card
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('ticketDetailsView').style.display = 'flex';
+    
+    // Preenche os dados
+    document.getElementById('detalheTitulo').textContent = `${ticket.titulo} #${ticket.id}`;
+    document.getElementById('detalheCliente').textContent = ticket.cliente;
+    document.getElementById('detalheDescricao').value = ticket.descricao;
 
-            // Renderiza o rodapé correto (Botão verde ou Campo de enviar mensagem)
-            const footer = document.getElementById('detailsFooter');
-            if (ticket.status === 'aguardando') {
-                footer.innerHTML = `
-                    <button class="btn-aceitar" onclick="aceitarTicket(${ticket.id})">Aceitar Chamado</button>
-                `;
-                footer.style.justifyContent = 'center';
-            } else {
-                footer.innerHTML = `
-                    <div class="comentario-wrapper">
-                        <input type="text" class="input-comentario" placeholder="Adicionar comentário...">
-                        <button class="btn-enviar" onclick="enviarComentario()"><i class="fa-solid fa-paper-plane"></i></button>
-                    </div>
-                `;
-                footer.style.justifyContent = 'flex-start';
-            }
+    // Verificamos o nível do usuário
+    const isUser = window.currentUser && window.currentUser.level === 'user';
+    const footer = document.getElementById('detailsFooter');
 
-            renderizarLista(); // Re-renderiza para aplicar a borda cinza no selecionado
+    // Lógica de exibição do rodapé
+    if (isUser) {
+        // 1. SE FOR CLIENTE: Não mostra nada! Limpa e esconde o rodapé.
+        footer.innerHTML = '';
+        footer.style.display = 'none';
+        
+    } else {
+        // Garante que o rodapé esteja visível para Admin/Operator
+        footer.style.display = 'flex'; 
+
+        if (ticket.status === 'aguardando') {
+            // 2. SE FOR ADMIN/OPERADOR e o ticket for NOVO: Mostra o botão de Aceitar
+            footer.innerHTML = `
+                <button class="btn-aceitar" onclick="aceitarTicket(${ticket.id})">Aceitar Ticket</button>
+            `;
+            footer.style.justifyContent = 'center';
+            
+        } else {
+            // 3. SE FOR ADMIN/OPERADOR e já estiver em atendimento: Mostra comentários
+            footer.innerHTML = `
+                <div class="comentario-wrapper">
+                    <input type="text" class="input-comentario" placeholder="Adicionar comentário...">
+                    <button class="btn-enviar" onclick="enviarComentario()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            `;
+            footer.style.justifyContent = 'flex-start';
         }
+    }
+
+    renderizarLista(); // Re-renderiza para aplicar a borda cinza no selecionado
+}
 
         // Função de Aceitar Chamado
 function aceitarTicket(id) {
