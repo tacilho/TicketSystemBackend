@@ -1,19 +1,30 @@
-from flask import Flask, render_template, request, redirect ,url_for
+from flask import Flask, render_template, request, redirect ,url_for, session
+from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy()
 
 app = Flask(__name__)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    'postgresql://'   # Conexão
+    'postgres:'       # Usuário
+    '123456@'         # Senha
+    'localhost:5432/' # Caminho (host:porta)
+    'ticketsystem'    # Banco
+)
 
+db.init_app(app) # aqui o banco vai inicializar o app.py
 @app.route('/')
 def index():
     return redirect(url_for('login'))
-
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
 #ACESSO DO USUÁRIO: SUPORTE/ CLIENTE/ ADM
+
+
     LOGIN_SUPORTE = "suporte@gmail.com"
     SENHA_SUPORTE = '123'
     LOGIN_ADM = "adm@123"
@@ -42,4 +53,4 @@ def tickets():
 
 
 
-app.run(host='0.0.0.0', port=8080)
+app.run(host='0.0.0.0', port=8080, debug=True)
