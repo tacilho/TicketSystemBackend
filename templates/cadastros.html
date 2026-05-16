@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketSystem - Cadastros</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='cadastros.css')}}"> <link rel="stylesheet" href="{{ url_for('static', filename='cadastros.css')}}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="{{ url_for('static', filename='cadastros.js') }}" defer></script>
+</head>
+<body>
+    <div class="layout-container">
+        
+        <nav class="sidebar">
+            <div class="brand-area">
+                <i class="fa-solid fa-tags logo-icon"></i>
+                <div class="brand-text">
+                    <div class="brand-title"><strong>Ticket</strong>System</div>
+                    <div class="brand-subtitle">Administrator</div>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" class="nav-item">
+                    <i class="fa-solid fa-border-all"></i> Home
+                </a>
+                <a href="{{ url_for('tickets') }}" class="nav-item">
+                    <i class="fa-solid fa-ticket-alt"></i> Tickets
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fa-solid fa-chart-line"></i> Relatórios
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fa-solid fa-folder-plus"></i> Cadastros
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            
+            <header class="top-header">
+                <button class="btn-profile">
+                    <i class="fa-regular fa-user-circle"></i> Meu Perfil
+                </button>
+            </header>
+
+            <div class="cadastros-grid">
+                
+                <div class="col-left">
+                    
+                    <div class="data-panel">
+                        <div class="panel-header">
+                            <h2>Usuários</h2>
+                            <button class="btn-novo" onclick="abrirModal('usuario')">Novo Usuário</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>E-mail</th>
+                                        <th>Setor</th>
+                                        <th>Nível de Acesso</th>
+                                        <th>Data de Cadastro</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-usuarios">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="data-panel">
+                        <div class="panel-header">
+                            <h2>Clientes</h2>
+                            <button class="btn-novo" onclick="abrirModal('cliente')">Novo Cliente</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>E-mail</th>
+                                        <th>Setor</th>
+                                        <th>Usuário</th>
+                                        <th>Data de Cadastro</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-clientes">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-right">
+                    
+                    <div class="data-panel">
+                        <div class="panel-header">
+                            <h2>Setores</h2>
+                            <button class="btn-novo" onclick="abrirModal('setor')">Novo Setor</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Setor</th>
+                                        <th>Responsável</th>
+                                        <th>Data de Cadastro</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-setores">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+        </main>
+    </div>
+
+    <div id="modal-usuario" class="cadastro-modal-overlay oculto">
+        <div class="cadastro-modal-box">
+            <h2 class="cadastro-modal-title">Cadastro de Usuários</h2>
+            
+            <form id="form-usuario">
+                <div class="cadastro-input-row">
+                    <div class="cadastro-input-group">
+                        <label>Usuário:</label>
+                        <input type="text" name="usuario" required>
+                    </div>
+                    <div class="cadastro-input-group">
+                        <label>E-mail:</label>
+                        <input type="email" name="email" required>
+                    </div>
+                </div>
+                
+                <div class="cadastro-input-row">
+                    <div class="cadastro-input-group">
+                        <label>Senha:</label>
+                        <input type="password" name="senha" required>
+                    </div>
+                    <div class="cadastro-input-group" style="flex-direction: row; gap: 20px;">
+                        <div class="cadastro-input-group">
+                            <label>Nível de Acesso:</label>
+                            <select name="nivel">
+                                <option value="usuario">Usuário</option>
+                                <option value="operator">Operador</option>
+                            </select>
+                        </div>
+                        <div class="cadastro-input-group">
+                            <label>Setor:</label>
+                            <select name="setor">
+                                <option value="Expedicao">Expedição</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cadastro-modal-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal('modal-usuario')">Cancelar</button>
+                    <button type="submit" class="btn-concluir">Concluir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-cliente" class="cadastro-modal-overlay oculto">
+        <div class="cadastro-modal-box">
+            <h2 class="cadastro-modal-title">Cadastro de Clientes</h2>
+            
+            <form id="form-cliente">
+                <div class="cadastro-input-row">
+                    <div class="cadastro-input-group">
+                        <label>Cliente:</label>
+                        <input type="text" name="cliente" required>
+                    </div>
+                    <div class="cadastro-input-group">
+                        <label>E-mail:</label>
+                        <input type="email" name="email" required>
+                    </div>
+                </div>
+                
+                <div class="cadastro-input-row">
+                    <div class="cadastro-input-group">
+                        <label>Usuário:</label>
+                        <input type="text" name="usuario" required>
+                    </div>
+                    <div class="cadastro-input-group">
+                        <label>Setor:</label>
+                            <select name="setor">
+                                <option value="Expedicao">Expedição</option>
+                            </select>
+                    </div>
+                </div>
+
+                <div class="cadastro-modal-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal('modal-cliente')">Cancelar</button>
+                    <button type="submit" class="btn-concluir">Concluir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-setor" class="cadastro-modal-overlay oculto">
+        <div class="cadastro-modal-box">
+            <h2 class="cadastro-modal-title">Cadastro de Setores</h2>
+            
+            <form id="form-setor">
+                <div class="cadastro-input-row">
+                    <div class="cadastro-input-group">
+                        <label>Setor:</label>
+                        <input type="text" name="setor" required>
+                    </div>
+                    <div class="cadastro-input-group">
+                        <label>Responsável:</label>
+                        <input type="text" name="responsavel" required>
+                    </div>
+                </div>
+
+                <div class="cadastro-modal-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal('modal-setor')">Cancelar</button>
+                    <button type="submit" class="btn-concluir">Concluir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

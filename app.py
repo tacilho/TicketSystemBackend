@@ -51,6 +51,9 @@ def home():
 def tickets():
     return render_template('/tickets.html')
 
+@app.route('/cadastros')
+def cadastros():
+    return render_template('/cadastros.html')
 
 
 app.run(host='0.0.0.0', port=8080, debug=True)

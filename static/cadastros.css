@@ -1,0 +1,330 @@
+/* =========================================
+   RESETS E BASE
+========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: #fafafa; /* Fundo ligeiramente cinza conforme imagem */
+    color: #111;
+}
+
+/* =========================================
+   LAYOUT GERAL E SIDEBAR
+========================================= */
+.layout-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: #f5f5f5;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-area {
+    padding: 30px 25px; /* Ajustado para alinhar verticalmente com os botões */
+    display: flex;
+    align-items: center;
+}
+
+.logo-icon {
+    color: #1ea32a;
+    font-size: 32px;
+    margin-right: 10px;
+    transform: rotate(-15deg);
+}
+
+.brand-title { font-size: 1.2rem; color: #1ea32a; font-weight: 400; }
+.brand-title strong { font-weight: 700; }
+.brand-subtitle { font-size: 0.75rem; color: #888; margin-top: -2px; }
+
+.nav-links {
+    padding: 10px 25px; /* Margem lateral igual à do logo para centralizar perfeitamente */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;                  
+    justify-content: center;  
+    padding-bottom: 90px
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Garante que ícone e texto comecem da esquerda */
+    gap: 15px;
+    padding: 15px 20px; /* Espaçamento interno do botão */
+    border-radius: 12px;
+    color: #333;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    background-color: #ffffff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    transition: all 0.2s;
+    width: 100%; /* Preenche 100% do espaço permitido pelo padding do pai */
+}
+
+.nav-item:hover, .nav-item.active {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+    border-color: #1ea32a; /* Dá um leve destaque verde na borda quando ativo */
+}
+
+.nav-item i { 
+    font-size: 1.2rem; 
+    width: 25px; /* Fixa a largura do ícone para que todos os textos fiquem alinhados na mesma linha imaginária */
+    text-align: center; 
+    color: #555; 
+}
+
+/* =========================================
+   ÁREA PRINCIPAL E CABEÇALHO
+========================================= */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.top-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 40px;
+}
+
+.btn-profile {
+    background-color: #ffffff;
+    color: #111;
+    border: 1px solid #e0e0e0;
+    padding: 10px 20px;
+    border-radius: 20px; /* Bordas bem arredondadas (pílula) */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+}
+
+.btn-profile i { font-size: 1.3rem; color: #555; }
+.btn-profile:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+
+/* =========================================
+   DASHBOARD DE CADASTROS (GRID)
+========================================= */
+.cadastros-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* Coluna esquerda ligeiramente maior */
+    gap: 30px;
+    padding: 0 40px 40px 40px;
+}
+
+.col-left, .col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Painéis de Dados */
+.data-panel {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.panel-header h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111;
+}
+
+.btn-novo {
+    background-color: #00b028; /* Verde vibrante da imagem */
+    color: #ffffff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px; /* Formato de pílula */
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-novo:hover {
+    background-color: #009020;
+}
+
+/* Tabelas */
+.table-container {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.data-table th {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #111;
+    padding: 12px 15px;
+    border-bottom: 2px solid #555; /* Linha preta sob o cabeçalho */
+    background-color: #fff;
+}
+
+.data-table td {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #333;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* Fundo do Modal */
+.cadastro-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Ocultar modais por padrão */
+.oculto {
+    display: none !important;
+}
+
+/* Caixa Branca do Modal */
+.cadastro-modal-box {
+    background-color: #fff;
+    width: 100%;
+    max-width: 650px; /* Largura ideal para acomodar 2 colunas */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Título */
+.cadastro-modal-title {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 30px;
+}
+
+/* Linhas e Colunas do Formulário */
+.cadastro-input-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.cadastro-input-group {
+    flex: 1; /* Faz as colunas dividirem o espaço igualmente */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Rótulos e Inputs */
+.cadastro-input-group label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 8px;
+}
+
+.cadastro-input-group input, 
+.cadastro-input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: #333;
+    outline: none;
+    background-color: #fafafa;
+    transition: border-color 0.2s;
+}
+
+.cadastro-input-group input:focus, 
+.cadastro-input-group select:focus {
+    border-color: #1ea32a;
+    background-color: #fff;
+}
+
+/* Botões do Rodapé */
+.cadastro-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 35px;
+}
+
+.btn-cancelar {
+    background-color: #c94c4c; /* Vermelho das imagens */
+    color: #fff;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-cancelar:hover {
+    background-color: #a83d3d;
+}
+
+.btn-concluir {
+    background-color: #00b028; /* Verde das imagens */
+    color: #fff;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-concluir:hover {
+    background-color: #009020;
+}

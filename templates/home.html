@@ -31,9 +31,9 @@
         </header>
 
         <nav class="sidebar">
-            <a href="#" class="nav-item active" data-nivel="operator">
+            <a href="{{ url_for('home') }}" class="nav-item active" data-nivel="operator">
                 <i class="fa-solid fa-border-all"></i>
-                Dashboard
+                Home
             </a>
             <a href="{{ url_for('tickets') }}" class="nav-item">
                 <i class="fa-solid fa-ticket-alt"></i>
@@ -43,9 +43,8 @@
                 <i class="fa-solid fa-chart-line"></i>
                 Relatórios
             </a>
-            <a href="#" class="nav-item" data-nivel="admin">
-                <i class="fa-solid fa-gear" ></i>
-                Configurações
+             <a href="{{ url_for('cadastros') }}" class="nav-item active" data-nivel="admin">
+                    <i class="fa-solid fa-folder-plus"></i> Cadastros
             </a>
         </nav>
 

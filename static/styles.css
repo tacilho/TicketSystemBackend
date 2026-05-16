@@ -522,9 +522,10 @@
     border: 1px solid #f0f0f0;
     transition: all 0.2s;
 }
-.nav-item-modern.active {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+.nav-item:hover, .nav-item-modern.active {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     transform: translateY(-2px);
+    border-color: #1ea32a; 
 }
 .nav-item-modern i { width: 20px; text-align: center; color: #555; }
 
