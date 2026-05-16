@@ -150,12 +150,6 @@
     background-color: #178221;
 }
 
-.login-footer {
-    text-align: center;
-    font-size: 0.85rem;
-    margin-top: 10px;
-}
-
 .footer-text {
     color: #222;
     font-weight: 700;
@@ -206,3 +200,95 @@
     text-align: center;
 }
 
+/* =========================================
+   MODAL DE REDEFINIR SENHA
+========================================= */
+
+/* Fundo da tela todo coberto (Overlay) */
+#reset-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(5px);           
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Caixa Branca Centralizada */
+.reset-modal-box {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 450px; 
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Título */
+.reset-modal-title {
+    color: #222;
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+/* Alinhamento dos Campos */
+.reset-input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Rótulos (Labels) */
+.reset-input-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Campos de Texto (Inputs) Cinzas */
+.reset-input-group input {
+    width: 100%;
+    background-color: #e5e5e5; 
+    border: none;
+    padding: 14px 15px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #333;
+    outline: none;
+    transition: background-color 0.2s;
+}
+
+.reset-input-group input::placeholder {
+    color: #888;
+}
+
+.reset-input-group input:focus {
+    background-color: #dcdcdc; 
+}
+
+/* Botão Verde */
+.btn-alterar-senha {
+    background-color: #1ea32a;
+    color: #ffffff;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.2s;
+}
+
+.btn-alterar-senha:hover {
+    background-color: #178221; 
+}

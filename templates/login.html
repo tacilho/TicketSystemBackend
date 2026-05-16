@@ -10,7 +10,7 @@
     
   <link rel="stylesheet" href="{{url_for('static', filename='loginstyles.css' )}}">
 
-    <script src="./assets/login.js"></script>
+    <script src="{{ url_for('static' , filename='login.js')}}"></script>
     
 </head>
 <body class="login-body">
@@ -47,11 +47,6 @@
                 <a onclick="showPasswordReset()" class="footer-link">Esqueci minha senha</a>
             </div>
 
-            <div class="login-footer">
-                <span class="footer-text">Ainda não possui uma conta?</span><br>
-                <a href="#" class="footer-link">Cadastre-se aqui</a>
-            </div>
-
         </form>
     </div>
 
@@ -62,15 +57,15 @@
             <div class="password-card" style="text-align: center;">
                 
                 <h3 class="login-heading" style="margin-bottom: 10px;">Insira seu e-mail</h3>
-                <p style="font-size: 0.8rem; color: #666; margin-bottom: 25px;">Iremos enviar um e-mail informando a sua senha<br>caso esteja cadastrado em nosso sistema.</p>
+                <p style="font-size: 0.8rem; color: #666; margin-bottom: 25px;">Iremos verificar se seu e-mail consta<br>em nossa base de dados</p>
 
-                <form onsubmit="passwordReset(event)">
+                <form>
                     <div class="input-group" style="text-align: left;">
-                        <input type="email" class="custom-input" placeholder="Insira seu e-mail..." style="background-color: #f5f5f5; border: none;" required>
+                        <input id="e-mail" type="email" class="custom-input" placeholder="Insira seu e-mail..." style="background-color: #f5f5f5; border: none;" required>
                     </div>
 
                     <div class="button-container" style="gap: 15px; margin-top: 10px; margin-bottom: 0;">
-                        <button type="submit" class="btn-submit" style="background-color: #ffc107; color: #fff; width: 100%;">Enviar Senha</button>
+                        <button onclick="checkEmail()" class="btn-submit" style="background-color: #ffc107; color: #fff; width: 100%;">Verificar e-mail</button>
                     </div>
                         
                     <div style="margin-top: 15px;">
@@ -81,6 +76,32 @@
             </div>
 
         </div>
+    </div>
+
+    <div class="oculto" id="reset-modal-overlay">
+    
+        <div class="reset-modal-box">
+            <h2 class="reset-modal-title">Redefina sua Senha</h2>
+        
+            <form>
+                <div class="reset-input-group">
+                    <label for="nova_senha">Insira sua nova senha:</label>
+                    <input type="password" id="nova_senha" name="nova_senha" placeholder="Insira sua nova senha..." required>
+                </div>
+            
+                <div class="reset-input-group">
+                    <label for="confirma_senha">Confirme sua nova senha:</label>
+                    <input type="password" id="confirma_senha" name="confirma_senha" placeholder="Confirme a sua senha..." required>
+                </div>
+            
+                <button onclick="passwordReset()" class="btn-alterar-senha">Alterar senha</button>
+
+                <div style="margin-top: 15px;">
+                        <a href="#" onclick="closePasswordReset()" class="footer-link" style="color: #666;">Voltar ao Login</a>
+                </div>
+            </form>
+        </div>
+    
     </div>
 </body>
 </html>
