@@ -328,3 +328,243 @@ body {
 .btn-concluir:hover {
     background-color: #009020;
 }
+
+/* =========================================
+   UX IMPROVEMENT: SPECIFIC LOGOUT BUTTONS
+   ========================================= */
+.header-profile-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-logout-sidebar {
+    margin-top: auto;
+    color: #d32f2f !important;
+    border-color: rgba(211, 47, 47, 0.2) !important;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    background-color: #fff;
+    border: 1px solid #f0f0f0;
+    transition: all 0.2s;
+}
+
+.btn-logout-sidebar:hover {
+    background-color: #ffebee !important;
+    border-color: #d32f2f !important;
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+.btn-logout-sidebar i {
+    color: #d32f2f !important;
+}
+
+.btn-logout-header {
+    background-color: #fff;
+    color: #d32f2f !important;
+    border: 1px solid rgba(211, 47, 47, 0.3) !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.btn-logout-header:hover {
+    background-color: #ffebee !important;
+    border-color: #d32f2f !important;
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.12) !important;
+    transform: translateY(-1px);
+}
+
+.btn-logout-header i {
+    color: #d32f2f !important;
+}
+
+/* Specific styling for top green banner logout */
+.client-header .btn-logout-header {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #fff !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.client-header .btn-logout-header:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    border-color: #fff !important;
+    box-shadow: 0 4px 10px rgba(255,255,255,0.1);
+}
+
+.client-header .btn-logout-header i {
+    color: #fff !important;
+}
+
+/* =========================================
+   UX IMPROVEMENT: RETRACTABLE SIDEBAR
+   ========================================= */
+/* Ensure smooth transition on the layouts */
+.layout-container {
+    transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.layout-container.sidebar-collapsed {
+    grid-template-columns: 80px 1fr !important;
+}
+
+.layout-container.sidebar-collapsed .sidebar-modern,
+.layout-container.sidebar-collapsed .sidebar-container,
+.layout-container.sidebar-collapsed .sidebar {
+    width: 80px !important;
+    min-width: 80px !important;
+    overflow: hidden !important;
+}
+
+/* brand area alignment when collapsed - stack vertically to avoid overlap */
+.layout-container.sidebar-collapsed .brand-area-modern,
+.layout-container.sidebar-collapsed .brand-area {
+    padding: 20px 0 !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Hide brand texts completely */
+.layout-container.sidebar-collapsed .brand-text-container,
+.layout-container.sidebar-collapsed .brand-text,
+.layout-container.sidebar-collapsed .brand-subtitle,
+.layout-container.sidebar-collapsed .brand-title {
+    display: none !important;
+}
+
+.layout-container.sidebar-collapsed .logo-icon {
+    margin-right: 0 !important;
+    font-size: 26px !important;
+    display: block !important;
+}
+
+/* Sidebar navigation links */
+.layout-container.sidebar-collapsed .nav-links,
+.layout-container.sidebar-collapsed .sidebar-nav {
+    padding: 0 10px !important;
+    align-items: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.layout-container.sidebar-collapsed .nav-item-modern,
+.layout-container.sidebar-collapsed .nav-item {
+    padding: 0 !important;
+    width: 48px !important;
+    height: 48px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 50% !important; /* Circular icons when collapsed */
+    position: relative !important;
+    gap: 0 !important; /* Remove gap so icon is perfectly centered! */
+    font-size: 0 !important; /* Hide bare text completely! */
+    color: transparent !important;
+}
+
+/* Force hiding of any child text elements or raw text node inside active links */
+.layout-container.sidebar-collapsed .nav-item-modern span,
+.layout-container.sidebar-collapsed .nav-item-modern text,
+.layout-container.sidebar-collapsed .nav-item span,
+.layout-container.sidebar-collapsed .nav-item text {
+    display: none !important;
+    font-size: 0 !important;
+    color: transparent !important;
+}
+
+/* Center link icon perfectly */
+.layout-container.sidebar-collapsed .nav-item-modern i,
+.layout-container.sidebar-collapsed .nav-item i {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    font-size: 1.2rem !important;
+    color: #555;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.layout-container.sidebar-collapsed .nav-item-modern.active i,
+.layout-container.sidebar-collapsed .nav-item.active i {
+    color: #1ea32a !important;
+}
+
+/* Sidebar Logout button when collapsed */
+.layout-container.sidebar-collapsed .btn-logout-sidebar {
+    width: 48px !important;
+    height: 48px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 50% !important;
+    font-size: 0 !important;
+    color: transparent !important;
+    gap: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 20px !important;
+    align-self: center !important;
+}
+
+.layout-container.sidebar-collapsed .btn-logout-sidebar i {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 1.2rem !important;
+    color: #d32f2f !important;
+}
+
+/* Sidebar toggle button styling */
+.btn-toggle-sidebar {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 5px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.btn-toggle-sidebar:hover {
+    background-color: #f0f0f0;
+    color: #1ea32a;
+}
+
+/* Center toggle button when collapsed */
+.layout-container.sidebar-collapsed .btn-toggle-sidebar {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+}
+

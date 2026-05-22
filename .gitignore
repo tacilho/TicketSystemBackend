@@ -1,0 +1,18 @@
+# SQLite database files
+instance/
+
+# User uploads
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+.venv/
+venv/
+env/

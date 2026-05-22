@@ -20,6 +20,9 @@
                 <div class="brand-title"><strong>Ticket</strong>System</div>
                 <div class="brand-subtitle">Administrator</div>
             </div>
+            <button class="btn-toggle-sidebar" onclick="toggleSidebar()" title="Recolher Menu">
+                <i class="fa-solid fa-chevron-left" id="toggleIcon"></i>
+            </button>
         </div>
 
         <header class="top-header">
@@ -46,34 +49,81 @@
              <a href="{{ url_for('cadastros') }}" class="nav-item active" data-nivel="admin">
                     <i class="fa-solid fa-folder-plus"></i> Cadastros
             </a>
+            <a href="/logout" class="btn-logout-sidebar">
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            </a>
         </nav>
 
         <main class="main-content">
-            
-            <div class="filter-section">
-                <span>Relatório por:</span>
-                <div class="select-wrapper">
-                    <select class="filter-select" id="relatorioFiltro">
-                        <option value="tipo">Tipo de Atendimento</option>
-                        <option value="data">Data de Criação</option>
-                    </select>
+            <!-- Welcome Header Banner -->
+            <div class="welcome-banner">
+                <div class="welcome-text">
+                    <h1 id="welcomeUser">Olá, Atendente!</h1>
+                    <p>Bem-vindo de volta ao painel de controle do TicketSystem. Aqui está o resumo das suas operações de hoje.</p>
+                </div>
+                <div class="welcome-icon">
+                    <i class="fa-solid fa-face-smile-wink"></i>
                 </div>
             </div>
 
-            <div class="stats-container">
-                
-                <div class="stat-card">
-                    <div class="stat-value">XX</div>
-                    <div class="stat-label">Tickets<br>Abertos</div>
+            <!-- Stats grid (horizontal cards) -->
+            <div class="stats-grid-modern">
+                <div class="stat-card-modern open-tickets">
+                    <div class="stat-card-icon">
+                        <i class="fa-solid fa-ticket"></i>
+                    </div>
+                    <div class="stat-card-details">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Tickets Aguardando</div>
+                    </div>
                 </div>
 
-                <div class="stat-card">
-                    <div class="stat-value">YY</div>
-                    <div class="stat-label">Tickets<br>Pendentes</div>
+                <div class="stat-card-modern pending-tickets">
+                    <div class="stat-card-icon">
+                        <i class="fa-solid fa-spinner fa-spin-slow"></i>
+                    </div>
+                    <div class="stat-card-details">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Tickets Em Atendimento</div>
+                    </div>
                 </div>
-
             </div>
 
+            <!-- Operational Workspace Row -->
+            <div class="dashboard-workspace">
+                <!-- Quick Navigation Card -->
+                <div class="dashboard-panel quick-nav-panel">
+                    <h3 class="panel-title"><i class="fa-solid fa-rocket"></i> Atalhos Rápidos</h3>
+                    <div class="quick-nav-links">
+                        <a href="{{ url_for('tickets') }}" class="quick-nav-btn">
+                            <i class="fa-solid fa-ticket-alt"></i>
+                            <div>
+                                <strong>Painel de Atendimento</strong>
+                                <span>Visualizar e responder tickets abertos</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow-indicator"></i>
+                        </a>
+                        
+                        <a href="{{ url_for('cadastros') }}" class="quick-nav-btn" data-nivel="admin">
+                            <i class="fa-solid fa-folder-plus"></i>
+                            <div>
+                                <strong>Painel de Cadastros</strong>
+                                <span>Gerenciar usuários, setores e perfis</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow-indicator"></i>
+                        </a>
+
+                        <a href="#" class="quick-nav-btn" onclick="abrirTicket()">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <div>
+                                <strong>Criar Novo Ticket</strong>
+                                <span>Abrir uma nova solicitação interna</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow-indicator"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </main>
 
 

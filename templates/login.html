@@ -27,6 +27,12 @@
 
         <h4 class="login-heading">Login</h4>
 
+        {% if request.args.get('error') == 'invalid' %}
+        <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 0.85rem; text-align: center; border: 1px solid #f5c6cb;">
+            Usuário ou senha incorretos!
+        </div>
+        {% endif %}
+
     <!--Esse linha vai enviar os dados para a login-->
         <form method="POST" action="/login">
             <div class="input-group">
@@ -65,7 +71,7 @@
                     </div>
 
                     <div class="button-container" style="gap: 15px; margin-top: 10px; margin-bottom: 0;">
-                        <button onclick="checkEmail()" class="btn-submit" style="background-color: #ffc107; color: #fff; width: 100%;">Verificar e-mail</button>
+                        <button type="button" onclick="checkEmail()" class="btn-submit" style="background-color: #ffc107; color: #fff; width: 100%;">Verificar e-mail</button>
                     </div>
                         
                     <div style="margin-top: 15px;">
@@ -94,7 +100,7 @@
                     <input type="password" id="confirma_senha" name="confirma_senha" placeholder="Confirme a sua senha..." required>
                 </div>
             
-                <button onclick="passwordReset()" class="btn-alterar-senha">Alterar senha</button>
+                <button type="button" onclick="passwordReset()" class="btn-alterar-senha">Alterar senha</button>
 
                 <div style="margin-top: 15px;">
                         <a href="#" onclick="closePasswordReset()" class="footer-link" style="color: #666;">Voltar ao Login</a>

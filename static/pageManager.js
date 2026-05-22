@@ -33,6 +33,8 @@ class PermissionManager{
             if(!this.user.levelManagement(levelRequired)){
 
                 element.classList.add('oculto');
+            } else {
+                element.classList.remove('oculto');
             }
         });
 
@@ -40,26 +42,101 @@ class PermissionManager{
     }
 
     refreshPage(){
-        
-        const sideElement = document.querySelector('.text-secondary[style*="0.75rem"]');
-
+        // Also update sub-title for admin page or sidebar profile label
+        const sideElement = document.querySelector('.brand-subtitle');
         if (sideElement){
-            
-            sideElement.textContent = this.user.level.charAt(0).toUpperCase() + this.user.level.slice(1);
+            sideElement.textContent = this.user.level === 'admin' ? 'Administrator' : this.user.level === 'operator' ? 'Operador' : 'Cliente';
         }
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    fetch('/api/me')
+        .then(response => {
+            if (!response.ok) {
+                // If not logged in, redirect to login page (if we are not already on login page)
+                if (!window.location.pathname.includes('/login')) {
+                    window.location.href = '/login';
+                }
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+            window.currentUser = new User(data.name, data.role);
 
-    window.currentUser = new User('Pedro', 'admin');
+            const uiManager = new PermissionManager(window.currentUser);
+            uiManager.applyRestrictions();
 
-    const uiManager = new PermissionManager(window.currentUser);
-    uiManager.applyRestrictions();
+            // Dynamic welcome name in dashboard
+            const welcomeUser = document.getElementById('welcomeUser');
+            if (welcomeUser) {
+                welcomeUser.innerHTML = `Olá, ${data.name}! 👋`;
+            }
 
-    if (typeof renderizarLista === 'function') {
-        renderizarLista();
+            // Dynamic profile name in header
+            const profileBtn = document.querySelector('.btn-profile');
+            if (profileBtn) {
+                profileBtn.innerHTML = `<i class="fa-regular fa-user-circle"></i> ${data.name}`;
+            }
+
+            // Stats loader (Dashboard)
+            const statCards = document.querySelectorAll('.stat-value');
+            if (statCards.length >= 2) {
+                fetch('/api/stats')
+                    .then(res => res.json())
+                    .then(stats => {
+                        statCards[0].textContent = stats.abertos;
+                        statCards[1].textContent = stats.pendentes;
+                    })
+                    .catch(err => console.error('Erro ao buscar estatísticas:', err));
+            }
+
+            if (typeof renderizarLista === 'function') {
+                renderizarLista();
+            }
+            if (typeof carregarTickets === 'function') {
+                carregarTickets();
+            }
+        })
+        .catch(err => {
+            console.error('Erro ao buscar dados do usuário:', err);
+        });
+});
+
+// =========================================
+// UX IMPROVEMENT: RETRACTABLE SIDEBAR JS
+// =========================================
+function toggleSidebar() {
+    const layout = document.querySelector('.layout-container');
+    const icon = document.getElementById('toggleIcon');
+    if (!layout) return;
+    
+    const isCollapsed = layout.classList.toggle('sidebar-collapsed');
+    localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+    
+    if (icon) {
+        if (isCollapsed) {
+            icon.className = 'fa-solid fa-chevron-right';
+        } else {
+            icon.className = 'fa-solid fa-chevron-left';
+        }
     }
-})
+}
 
+function restoreSidebarState() {
+    const layout = document.querySelector('.layout-container');
+    const icon = document.getElementById('toggleIcon');
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    
+    if (layout && isCollapsed) {
+        layout.classList.add('sidebar-collapsed');
+        if (icon) {
+            icon.className = 'fa-solid fa-chevron-right';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', restoreSidebarState);
 
