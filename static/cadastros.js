@@ -47,6 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${user.setor || 'Nenhum'}</td>
                     <td>${user.nivel === 'admin' ? 'Administrador' : user.nivel === 'operator' ? 'Operador' : 'Usuário'}</td>
                     <td>${user.data}</td>
+                    <td>
+                        <button class="btn-excluir" onclick="excluirUsuario(${user.id})" title="Excluir Usuário" style="color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 1.1rem;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
                 </tr>
             `;
         });
@@ -244,6 +249,27 @@ function restoreSidebarState() {
         if (icon) {
             icon.className = 'fa-solid fa-chevron-right';
         }
+    }
+}
+
+function excluirUsuario(id) {
+    if (confirm("Tem certeza que deseja excluir este usuário? O acesso dele será revogado.")) {
+        fetch(`/api/users/${id}`, {
+            method: 'DELETE'
+        })
+        .then(res => {
+            if (!res.ok) {
+                return res.json().then(json => {
+                    throw new Error(json.error || 'Erro ao excluir usuário');
+                });
+            }
+            return res.json();
+        })
+        .then(() => {
+            // Recarrega os dados
+            document.location.reload();
+        })
+        .catch(err => alert(err.message));
     }
 }
 

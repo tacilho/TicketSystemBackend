@@ -29,8 +29,10 @@ function mudarAba(aba) {
     // Atualiza botões
     const btnAguardando = document.getElementById('btnAguardando');
     const btnAtendimento = document.getElementById('btnAtendimento');
+    const btnConcluido = document.getElementById('btnConcluido');
     if (btnAguardando) btnAguardando.classList.toggle('active', aba === 'aguardando');
     if (btnAtendimento) btnAtendimento.classList.toggle('active', aba === 'em_atendimento');
+    if (btnConcluido) btnConcluido.classList.toggle('active', aba === 'concluido');
     
     esconderDetalhes();
     renderizarLista();
@@ -141,10 +143,15 @@ function abrirDetalhes(id) {
                     <button class="btn-aceitar" onclick="aceitarTicket(${ticket.id})">Aceitar Ticket</button>
                 `;
                 footer.style.justifyContent = 'center';
-            } else {
-                // Se já estiver em atendimento, pode mostrar que está sendo atendido
+            } else if (ticket.status === 'em_atendimento') {
+                // Se já estiver em atendimento, pode concluir
                 footer.innerHTML = `
-                    <span style="color: #666; font-size: 0.9rem; font-weight: 500;">Este ticket está em atendimento por você.</span>
+                    <button class="btn-aceitar" style="background-color: #3498db;" onclick="concluirTicket(${ticket.id})"><i class="fa-solid fa-check"></i> Concluir Ticket</button>
+                `;
+                footer.style.justifyContent = 'center';
+            } else {
+                footer.innerHTML = `
+                    <span style="color: #666; font-size: 0.9rem; font-weight: 500;"><i class="fa-solid fa-lock" style="margin-right: 5px;"></i>Este ticket foi concluído.</span>
                 `;
                 footer.style.justifyContent = 'center';
             }
@@ -173,6 +180,17 @@ function carregarMensagens(ticket_id) {
 
             feed.innerHTML = '';
             messages.forEach(msg => {
+                if (msg.sender_name === 'Sistema') {
+                    feed.innerHTML += `
+                        <div style="text-align: center; margin: 15px 0; width: 100%;">
+                            <span style="background-color: #e2e8f0; color: #475569; padding: 6px 14px; border-radius: 12px; font-size: 0.85rem; font-weight: 500; display: inline-block;">
+                                <i class="fa-solid fa-circle-info" style="margin-right: 4px;"></i> ${msg.text} <span style="font-size: 0.75rem; margin-left: 6px; color: #94a3b8;">${msg.created_at}</span>
+                            </span>
+                        </div>
+                    `;
+                    return;
+                }
+
                 const isSelf = window.currentUser && window.currentUser.name === msg.sender_name;
                 const alignment = isSelf ? 'self' : 'other';
 
@@ -284,6 +302,26 @@ function aceitarTicket(id) {
         mudarAba('em_atendimento');
     })
     .catch(err => alert(err.message));
+}
+
+// Função de Concluir Chamado (Chama a API do Flask)
+function concluirTicket(id) {
+    if (confirm("Deseja realmente concluir este ticket? Ele será movido para o histórico.")) {
+        fetch(`/api/tickets/${id}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'concluido' })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Erro ao concluir ticket');
+            return res.json();
+        })
+        .then(() => {
+            carregarTickets();
+            mudarAba('concluido');
+        })
+        .catch(err => alert(err.message));
+    }
 }
 
 function enviarComentario() {

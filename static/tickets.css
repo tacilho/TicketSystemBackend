@@ -245,7 +245,14 @@ body {
 }
 
 /* Ações Inferiores (Botões e Comentários) */
-.details-footer { display: flex; width: 100%; }
+.details-footer { 
+    display: flex; 
+    width: 100%; 
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    align-items: center;
+}
 
 .btn-aceitar {
     background-color: #1ea32a;

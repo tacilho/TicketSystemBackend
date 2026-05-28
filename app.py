@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'super-secret-key-ticket-system'
@@ -28,6 +29,7 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(20), nullable=False) # 'admin', 'operator', 'user'
     sector = db.Column(db.String(100), nullable=True)
+    active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def to_dict(self):
@@ -119,14 +121,20 @@ with app.app_context():
     db.create_all()
     # Check if default users exist, if not, create them
     if not User.query.filter_by(email='suporte@gmail.com').first():
-        support = User(name='Suporte', email='suporte@gmail.com', password='123', role='operator', sector='T.I.')
+        support = User(name='Suporte', email='suporte@gmail.com', password=generate_password_hash('123'), role='operator', sector='T.I.')
         db.session.add(support)
     if not User.query.filter_by(email='adm@123').first():
-        admin = User(name='Administrador', email='adm@123', password='admin', role='admin', sector='Diretoria')
+        admin = User(name='Administrador', email='adm@123', password=generate_password_hash('admin'), role='admin', sector='Diretoria')
         db.session.add(admin)
     if not User.query.filter_by(email='teste@gmail.com').first():
-        client_user = User(name='Pedro', email='teste@gmail.com', password='teste', role='user', sector='Expedição')
+        client_user = User(name='Pedro', email='teste@gmail.com', password=generate_password_hash('teste'), role='user', sector='Expedição')
         db.session.add(client_user)
+        
+    # Migrate existing plaintext passwords
+    all_users = User.query.all()
+    for u in all_users:
+        if not u.password.startswith('scrypt:') and not u.password.startswith('pbkdf2:'):
+            u.password = generate_password_hash(u.password)
         
     # Check if default sectors exist, if not, create them
     if not Sector.query.filter_by(name='Expedição').first():
@@ -164,8 +172,8 @@ def login():
         login_val = request.form.get('login')
         senha_val = request.form.get('senha')
         
-        user = User.query.filter_by(email=login_val).first()
-        if user and user.password == senha_val:
+        user = User.query.filter_by(email=login_val, active=True).first()
+        if user and check_password_hash(user.password, senha_val):
             session['user_id'] = user.id
             if user.role == 'user':
                 return redirect(url_for('tickets'))
@@ -273,7 +281,17 @@ def api_ticket_status(id):
     if not data or not data.get('status'):
         return jsonify({'error': 'Dados incompletos'}), 400
         
-    ticket.status = data['status']
+    if ticket.status != data['status']:
+        ticket.status = data['status']
+        user = User.query.get(user_id)
+        sys_msg = Message(
+            ticket_id=ticket.id,
+            sender_id=user.id,
+            sender_name='Sistema',
+            text=f"Status alterado para '{data['status']}' por {user.name}."
+        )
+        db.session.add(sys_msg)
+    
     db.session.commit()
     return jsonify(ticket.to_dict())
 
@@ -284,7 +302,7 @@ def api_users():
         return jsonify({'error': 'Não logado'}), 401
     
     if request.method == 'GET':
-        users = User.query.all()
+        users = User.query.filter_by(active=True).all()
         return jsonify([u.to_dict() for u in users])
         
     elif request.method == 'POST':
@@ -301,10 +319,29 @@ def api_users():
         if User.query.filter_by(email=email).first():
             return jsonify({'error': 'E-mail já cadastrado'}), 400
             
-        new_user = User(name=name, email=email, password=password, role=role, sector=sector)
+        hashed_password = generate_password_hash(password)
+        new_user = User(name=name, email=email, password=hashed_password, role=role, sector=sector)
         db.session.add(new_user)
         db.session.commit()
         return jsonify(new_user.to_dict()), 201
+
+@app.route('/api/users/<int:id>', methods=['DELETE'])
+def api_delete_user(id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Não logado'}), 401
+        
+    current_user = User.query.get(user_id)
+    if current_user.role != 'admin':
+        return jsonify({'error': 'Acesso negado'}), 403
+        
+    target_user = User.query.get_or_404(id)
+    if target_user.id == current_user.id:
+        return jsonify({'error': 'Não pode excluir a si mesmo'}), 400
+        
+    target_user.active = False
+    db.session.commit()
+    return jsonify({'success': True})
 
 @app.route('/api/clients', methods=['GET', 'POST'])
 def api_clients():
@@ -331,7 +368,8 @@ def api_clients():
         
         # Also auto-create a user account for them so they can log in!
         if not User.query.filter_by(email=email).first():
-            new_user = User(name=name, email=email, password='123', role='user', sector=sector)
+            hashed_password = generate_password_hash('123')
+            new_user = User(name=name, email=email, password=hashed_password, role='user', sector=sector)
             db.session.add(new_user)
             
         db.session.commit()
@@ -377,9 +415,9 @@ def api_reset_password():
     email = session.get('reset_email')
     if not email:
         return jsonify({'error': 'Sessão de redefinição expirada'}), 400
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email, active=True).first()
     if user:
-        user.password = new_password
+        user.password = generate_password_hash(new_password)
         db.session.commit()
         session.pop('reset_email', None)
         return jsonify({'success': True})
