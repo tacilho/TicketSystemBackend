@@ -34,7 +34,7 @@
                 <a href="{{ url_for('tickets') }}" class="nav-item">
                     <i class="fa-solid fa-ticket-alt"></i> Tickets
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ url_for('relatorios') }}" class="nav-item">
                     <i class="fa-solid fa-chart-line"></i> Relatórios
                 </a>
                 <a href="#" class="nav-item active">
@@ -60,8 +60,11 @@
                     
                     <div class="data-panel">
                         <div class="panel-header">
-                            <h2>Usuários</h2>
-                            <button class="btn-novo" onclick="abrirModal('usuario')">Novo Usuário</button>
+                            <h2>Usuários e Operadores</h2>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn-novo" onclick="abrirModalUsuario('usuario')">Novo Usuário</button>
+                                <button class="btn-novo" style="background-color: #f39c12;" onclick="abrirModalUsuario('operator')">Novo Operador</button>
+                            </div>
                         </div>
                         <div class="table-container">
                             <table class="data-table">
@@ -95,6 +98,7 @@
                                         <th>Setor</th>
                                         <th>Usuário</th>
                                         <th>Data de Cadastro</th>
+                                        <th>Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabela-clientes">
@@ -119,6 +123,7 @@
                                         <th>Setor</th>
                                         <th>Responsável</th>
                                         <th>Data de Cadastro</th>
+                                        <th>Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabela-setores">
@@ -135,9 +140,10 @@
 
     <div id="modal-usuario" class="cadastro-modal-overlay oculto">
         <div class="cadastro-modal-box">
-            <h2 class="cadastro-modal-title">Cadastro de Usuários</h2>
+            <h2 class="cadastro-modal-title" id="titulo-modal-usuario">Cadastro de Usuários</h2>
             
             <form id="form-usuario">
+                <input type="hidden" id="edit-usuario-id" name="id">
                 <div class="cadastro-input-row">
                     <div class="cadastro-input-group">
                         <label>Usuário:</label>
@@ -157,14 +163,14 @@
                     <div class="cadastro-input-group" style="flex-direction: row; gap: 20px;">
                         <div class="cadastro-input-group">
                             <label>Nível de Acesso:</label>
-                            <select name="nivel">
+                            <select name="nivel" id="select-nivel-usuario">
                                 <option value="usuario">Usuário</option>
                                 <option value="operator">Operador</option>
                             </select>
                         </div>
                         <div class="cadastro-input-group">
                             <label>Setor:</label>
-                            <select name="setor">
+                            <select name="setor" id="select-setor-usuario">
                                 <option value="Expedicao">Expedição</option>
                             </select>
                         </div>
@@ -181,9 +187,10 @@
 
     <div id="modal-cliente" class="cadastro-modal-overlay oculto">
         <div class="cadastro-modal-box">
-            <h2 class="cadastro-modal-title">Cadastro de Clientes</h2>
+            <h2 class="cadastro-modal-title" id="titulo-modal-cliente">Cadastro de Clientes</h2>
             
             <form id="form-cliente">
+                <input type="hidden" id="edit-cliente-id" name="id">
                 <div class="cadastro-input-row">
                     <div class="cadastro-input-group">
                         <label>Cliente:</label>
@@ -218,9 +225,10 @@
 
     <div id="modal-setor" class="cadastro-modal-overlay oculto">
         <div class="cadastro-modal-box">
-            <h2 class="cadastro-modal-title">Cadastro de Setores</h2>
+            <h2 class="cadastro-modal-title" id="titulo-modal-setor">Cadastro de Setores</h2>
             
             <form id="form-setor">
+                <input type="hidden" id="edit-setor-id" name="id">
                 <div class="cadastro-input-row">
                     <div class="cadastro-input-group">
                         <label>Setor:</label>

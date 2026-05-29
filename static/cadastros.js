@@ -48,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${user.nivel === 'admin' ? 'Administrador' : user.nivel === 'operator' ? 'Operador' : 'Usuário'}</td>
                     <td>${user.data}</td>
                     <td>
+                        <button class="btn-editar" onclick="editarUsuario(${user.id})" title="Editar" style="color: #3498db; background: none; border: none; cursor: pointer; font-size: 1.1rem; margin-right: 10px;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
                         <button class="btn-excluir" onclick="excluirUsuario(${user.id})" title="Excluir Usuário" style="color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 1.1rem;">
                             <i class="fa-solid fa-trash"></i>
                         </button>
@@ -69,6 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${cliente.setor || 'Nenhum'}</td>
                     <td>${cliente.usuario}</td>
                     <td>${cliente.data}</td>
+                    <td>
+                        <button class="btn-editar" onclick="editarCliente(${cliente.id})" title="Editar" style="color: #3498db; background: none; border: none; cursor: pointer; font-size: 1.1rem; margin-right: 10px;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn-excluir" onclick="excluirCliente(${cliente.id})" title="Excluir Cliente" style="color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 1.1rem;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
                 </tr>
             `;
         });
@@ -84,6 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${setor.setor}</td>
                     <td>${setor.responsavel}</td>
                     <td>${setor.data}</td>
+                    <td>
+                        <button class="btn-editar" onclick="editarSetor(${setor.id})" title="Editar" style="color: #3498db; background: none; border: none; cursor: pointer; font-size: 1.1rem; margin-right: 10px;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn-excluir" onclick="excluirSetor(${setor.id})" title="Excluir Setor" style="color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 1.1rem;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
                 </tr>
             `;
         });
@@ -115,16 +134,20 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const formData = new FormData(formUser);
             const data = Object.fromEntries(formData.entries());
+            const userId = document.getElementById('edit-usuario-id').value;
             
-            fetch('/api/users', {
-                method: 'POST',
+            const method = userId ? 'PUT' : 'POST';
+            const url = userId ? `/api/users/${userId}` : '/api/users';
+
+            fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
             .then(res => {
                 if (!res.ok) {
                     return res.json().then(json => {
-                        throw new Error(json.error || 'Erro ao cadastrar usuário');
+                        throw new Error(json.error || 'Erro ao salvar usuário');
                     });
                 }
                 return res.json();
@@ -145,16 +168,20 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const formData = new FormData(formCliente);
             const data = Object.fromEntries(formData.entries());
+            const clienteId = document.getElementById('edit-cliente-id').value;
             
-            fetch('/api/clients', {
-                method: 'POST',
+            const method = clienteId ? 'PUT' : 'POST';
+            const url = clienteId ? `/api/clients/${clienteId}` : '/api/clients';
+            
+            fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
             .then(res => {
                 if (!res.ok) {
                     return res.json().then(json => {
-                        throw new Error(json.error || 'Erro ao cadastrar cliente');
+                        throw new Error(json.error || 'Erro ao salvar cliente');
                     });
                 }
                 return res.json();
@@ -175,16 +202,20 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const formData = new FormData(formSetor);
             const data = Object.fromEntries(formData.entries());
+            const setorId = document.getElementById('edit-setor-id').value;
             
-            fetch('/api/sectors', {
-                method: 'POST',
+            const method = setorId ? 'PUT' : 'POST';
+            const url = setorId ? `/api/sectors/${setorId}` : '/api/sectors';
+            
+            fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
             .then(res => {
                 if (!res.ok) {
                     return res.json().then(json => {
-                        throw new Error(json.error || 'Erro ao cadastrar setor');
+                        throw new Error(json.error || 'Erro ao salvar setor');
                     });
                 }
                 return res.json();
@@ -208,6 +239,39 @@ function abrirModal(tipo) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('oculto');
+        
+        // Limpar form para garantir que é uma criação
+        const form = document.getElementById(`form-${tipo}`);
+        if(form) {
+            form.reset();
+            const idInput = document.getElementById(`edit-${tipo}-id`);
+            if(idInput) idInput.value = '';
+            
+            if(tipo === 'usuario') {
+                const senhaInput = form.querySelector('[name="senha"]');
+                if(senhaInput) senhaInput.setAttribute('required', 'true');
+            }
+        }
+    }
+}
+
+function abrirModalUsuario(nivel) {
+    abrirModal('usuario');
+    document.getElementById('titulo-modal-usuario').textContent = "Cadastro de " + (nivel === 'operator' ? 'Operador' : 'Usuário');
+    
+    const selectNivel = document.getElementById('select-nivel-usuario');
+    if(selectNivel) {
+        selectNivel.value = nivel;
+        selectNivel.disabled = true;
+        let hidden = document.getElementById('hidden-nivel-usuario');
+        if(!hidden) {
+            hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.id = 'hidden-nivel-usuario';
+            hidden.name = 'nivel';
+            document.getElementById('form-usuario').appendChild(hidden);
+        }
+        hidden.value = nivel;
     }
 }
 
@@ -266,9 +330,97 @@ function excluirUsuario(id) {
             return res.json();
         })
         .then(() => {
-            // Recarrega os dados
             document.location.reload();
         })
+        .catch(err => alert(err.message));
+    }
+}
+
+function editarUsuario(id) {
+    fetch('/api/users')
+        .then(res => res.json())
+        .then(users => {
+            const user = users.find(u => u.id === id);
+            if(user) {
+                abrirModal('usuario');
+                document.getElementById('edit-usuario-id').value = user.id;
+                document.getElementById('titulo-modal-usuario').textContent = "Editar " + (user.nivel === 'operator' ? 'Operador' : 'Usuário');
+                const form = document.getElementById('form-usuario');
+                form.querySelector('[name="usuario"]').value = user.usuario;
+                form.querySelector('[name="email"]').value = user.email;
+                
+                const selectNivel = document.getElementById('select-nivel-usuario');
+                if(selectNivel) {
+                    selectNivel.value = user.nivel;
+                    selectNivel.disabled = true;
+                    let hidden = document.getElementById('hidden-nivel-usuario');
+                    if(!hidden) {
+                        hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.id = 'hidden-nivel-usuario';
+                        hidden.name = 'nivel';
+                        form.appendChild(hidden);
+                    }
+                    hidden.value = user.nivel;
+                }
+                
+                const selectSetor = form.querySelector('[name="setor"]');
+                if(selectSetor && user.setor) selectSetor.value = user.setor;
+                
+                form.querySelector('[name="senha"]').removeAttribute('required');
+            }
+        });
+}
+
+function editarCliente(id) {
+    fetch('/api/clients')
+        .then(res => res.json())
+        .then(clients => {
+            const cliente = clients.find(c => c.id === id);
+            if(cliente) {
+                abrirModal('cliente');
+                document.getElementById('edit-cliente-id').value = cliente.id;
+                document.getElementById('titulo-modal-cliente').textContent = "Editar Cliente";
+                const form = document.getElementById('form-cliente');
+                form.querySelector('[name="cliente"]').value = cliente.cliente;
+                form.querySelector('[name="email"]').value = cliente.email;
+                form.querySelector('[name="usuario"]').value = cliente.usuario;
+                const selectSetor = form.querySelector('[name="setor"]');
+                if(selectSetor && cliente.setor) selectSetor.value = cliente.setor;
+            }
+        });
+}
+
+function excluirCliente(id) {
+    if (confirm("Tem certeza que deseja excluir este cliente?")) {
+        fetch(`/api/clients/${id}`, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(() => document.location.reload())
+        .catch(err => alert(err.message));
+    }
+}
+
+function editarSetor(id) {
+    fetch('/api/sectors')
+        .then(res => res.json())
+        .then(sectors => {
+            const setor = sectors.find(s => s.id === id);
+            if(setor) {
+                abrirModal('setor');
+                document.getElementById('edit-setor-id').value = setor.id;
+                document.getElementById('titulo-modal-setor').textContent = "Editar Setor";
+                const form = document.getElementById('form-setor');
+                form.querySelector('[name="setor"]').value = setor.setor;
+                form.querySelector('[name="responsavel"]').value = setor.responsavel;
+            }
+        });
+}
+
+function excluirSetor(id) {
+    if (confirm("Tem certeza que deseja excluir este setor?")) {
+        fetch(`/api/sectors/${id}`, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(() => document.location.reload())
         .catch(err => alert(err.message));
     }
 }

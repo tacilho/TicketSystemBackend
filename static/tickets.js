@@ -130,9 +130,16 @@ function abrirDetalhes(id) {
     if (footer) {
         // Lógica de exibição do rodapé
         if (isUser) {
-            // SE FOR CLIENTE: Não mostra nada! Limpa e esconde o rodapé.
-            footer.innerHTML = '';
-            footer.style.display = 'none';
+            if (ticket.status === 'concluido') {
+                footer.innerHTML = `
+                    <button class="btn-cancelar" onclick="reabrirTicket(${ticket.id})"><i class="fa-solid fa-lock-open"></i> Reabrir Ticket</button>
+                `;
+                footer.style.display = 'flex';
+                footer.style.justifyContent = 'center';
+            } else {
+                footer.innerHTML = '';
+                footer.style.display = 'none';
+            }
         } else {
             // Garante que o rodapé esteja visível para Admin/Operator
             footer.style.display = 'flex'; 
@@ -151,10 +158,35 @@ function abrirDetalhes(id) {
                 footer.style.justifyContent = 'center';
             } else {
                 footer.innerHTML = `
-                    <span style="color: #666; font-size: 0.9rem; font-weight: 500;"><i class="fa-solid fa-lock" style="margin-right: 5px;"></i>Este ticket foi concluído.</span>
+                    <button class="btn-cancelar" onclick="reabrirTicket(${ticket.id})"><i class="fa-solid fa-lock-open"></i> Reabrir</button>
+                    <span style="color: #666; font-size: 0.9rem; font-weight: 500; margin-left: 10px;"><i class="fa-solid fa-lock" style="margin-right: 5px;"></i>Este ticket foi concluído.</span>
                 `;
                 footer.style.justifyContent = 'center';
             }
+        }
+    }
+
+    // Bloquear chat se estiver concluído
+    const chatInput = document.getElementById('chatInput');
+    const chatAttach = document.getElementById('chatAttach');
+    const btnSendMessage = document.querySelector('.btn-send-message');
+    const btnAttach = document.querySelector('.btn-attach');
+    
+    if (chatInput && chatAttach && btnSendMessage && btnAttach) {
+        if (ticket.status === 'concluido') {
+            chatInput.disabled = true;
+            chatAttach.disabled = true;
+            btnSendMessage.disabled = true;
+            btnAttach.style.pointerEvents = 'none';
+            btnAttach.style.opacity = '0.5';
+            chatInput.placeholder = 'Ticket fechado. Reabra para enviar mensagens.';
+        } else {
+            chatInput.disabled = false;
+            chatAttach.disabled = false;
+            btnSendMessage.disabled = false;
+            btnAttach.style.pointerEvents = 'auto';
+            btnAttach.style.opacity = '1';
+            chatInput.placeholder = 'Escreva uma mensagem...';
         }
     }
 
@@ -319,6 +351,26 @@ function concluirTicket(id) {
         .then(() => {
             carregarTickets();
             mudarAba('concluido');
+        })
+        .catch(err => alert(err.message));
+    }
+}
+
+// Função para Reabrir o Ticket (Chama a API do Flask)
+function reabrirTicket(id) {
+    if (confirm("Deseja realmente reabrir este ticket?")) {
+        fetch(`/api/tickets/${id}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'em_atendimento' })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Erro ao reabrir ticket');
+            return res.json();
+        })
+        .then(() => {
+            carregarTickets();
+            mudarAba('em_atendimento');
         })
         .catch(err => alert(err.message));
     }

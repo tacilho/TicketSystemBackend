@@ -212,6 +212,15 @@ def cadastros():
         return redirect(url_for('home'))
     return render_template('cadastros.html')
 
+@app.route('/relatorios')
+def relatorios():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    user = User.query.get(session['user_id'])
+    if not user or user.role == 'user':
+        return redirect(url_for('home'))
+    return render_template('relatorios.html')
+
 # --- API ENDPOINTS ---
 @app.route('/api/me')
 def api_me():
@@ -239,6 +248,39 @@ def api_stats():
     return jsonify({
         'abertos': abertos,
         'pendentes': pendentes
+    })
+
+@app.route('/api/reports')
+def api_reports():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Não logado'}), 401
+    user = User.query.get(user_id)
+    if not user or user.role == 'user':
+        return jsonify({'error': 'Acesso negado'}), 403
+
+    total = Ticket.query.count()
+    aguardando = Ticket.query.filter_by(status='aguardando').count()
+    em_atendimento = Ticket.query.filter_by(status='em_atendimento').count()
+    concluido = Ticket.query.filter_by(status='concluido').count()
+
+    from sqlalchemy import func
+    cliente_counts = db.session.query(Ticket.client_name, func.count(Ticket.id)).group_by(Ticket.client_name).all()
+    tickets_por_cliente = [{'cliente': c[0], 'count': c[1]} for c in cliente_counts]
+
+    tickets_por_status = [
+        {'status': 'Aguardando', 'count': aguardando},
+        {'status': 'Em Atendimento', 'count': em_atendimento},
+        {'status': 'Concluído', 'count': concluido}
+    ]
+
+    return jsonify({
+        'total': total,
+        'aguardando': aguardando,
+        'em_atendimento': em_atendimento,
+        'concluido': concluido,
+        'tickets_por_cliente': tickets_por_cliente,
+        'tickets_por_status': tickets_por_status
     })
 
 @app.route('/api/tickets', methods=['GET', 'POST'])
@@ -325,8 +367,8 @@ def api_users():
         db.session.commit()
         return jsonify(new_user.to_dict()), 201
 
-@app.route('/api/users/<int:id>', methods=['DELETE'])
-def api_delete_user(id):
+@app.route('/api/users/<int:id>', methods=['PUT', 'DELETE'])
+def api_manage_user(id):
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'error': 'Não logado'}), 401
@@ -336,12 +378,46 @@ def api_delete_user(id):
         return jsonify({'error': 'Acesso negado'}), 403
         
     target_user = User.query.get_or_404(id)
-    if target_user.id == current_user.id:
-        return jsonify({'error': 'Não pode excluir a si mesmo'}), 400
+    
+    if request.method == 'DELETE':
+        if target_user.id == current_user.id:
+            return jsonify({'error': 'Não pode excluir a si mesmo'}), 400
+        target_user.active = False
+        db.session.commit()
+        return jsonify({'success': True})
         
-    target_user.active = False
+    data = request.json
+    target_user.name = data.get('usuario', target_user.name)
+    target_user.email = data.get('email', target_user.email)
+    target_user.sector = data.get('setor', target_user.sector)
+    target_user.role = data.get('nivel', target_user.role)
+    if data.get('senha'):
+        target_user.password = generate_password_hash(data['senha'])
     db.session.commit()
-    return jsonify({'success': True})
+    return jsonify(target_user.to_dict())
+
+@app.route('/api/clients/<int:id>', methods=['PUT', 'DELETE'])
+def api_manage_client(id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Não logado'}), 401
+    current_user = User.query.get(user_id)
+    if current_user.role != 'admin':
+        return jsonify({'error': 'Acesso negado'}), 403
+    target_client = Client.query.get_or_404(id)
+    
+    if request.method == 'DELETE':
+        db.session.delete(target_client)
+        db.session.commit()
+        return jsonify({'success': True})
+        
+    data = request.json
+    target_client.name = data.get('cliente', target_client.name)
+    target_client.email = data.get('email', target_client.email)
+    target_client.username = data.get('usuario', target_client.username)
+    target_client.sector = data.get('setor', target_client.sector)
+    db.session.commit()
+    return jsonify(target_client.to_dict())
 
 @app.route('/api/clients', methods=['GET', 'POST'])
 def api_clients():
@@ -366,7 +442,6 @@ def api_clients():
         new_client = Client(name=name, email=email, username=username, sector=sector)
         db.session.add(new_client)
         
-        # Also auto-create a user account for them so they can log in!
         if not User.query.filter_by(email=email).first():
             hashed_password = generate_password_hash('123')
             new_user = User(name=name, email=email, password=hashed_password, role='user', sector=sector)
@@ -374,6 +449,27 @@ def api_clients():
             
         db.session.commit()
         return jsonify(new_client.to_dict()), 201
+
+@app.route('/api/sectors/<int:id>', methods=['PUT', 'DELETE'])
+def api_manage_sector(id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Não logado'}), 401
+    current_user = User.query.get(user_id)
+    if current_user.role != 'admin':
+        return jsonify({'error': 'Acesso negado'}), 403
+    target_sector = Sector.query.get_or_404(id)
+    
+    if request.method == 'DELETE':
+        db.session.delete(target_sector)
+        db.session.commit()
+        return jsonify({'success': True})
+        
+    data = request.json
+    target_sector.name = data.get('setor', target_sector.name)
+    target_sector.manager = data.get('responsavel', target_sector.manager)
+    db.session.commit()
+    return jsonify(target_sector.to_dict())
 
 @app.route('/api/sectors', methods=['GET', 'POST'])
 def api_sectors():
@@ -447,6 +543,9 @@ def send_message(ticket_id):
     ticket = Ticket.query.get_or_404(ticket_id)
     if user.role == 'user' and ticket.client_name != user.name:
         return jsonify({'error': 'Acesso negado'}), 403
+        
+    if ticket.status == 'concluido':
+        return jsonify({'error': 'Não é possível enviar mensagens. Este ticket já está concluído.'}), 400
         
     text = request.form.get('text', '').strip()
     image_file = request.files.get('image')
