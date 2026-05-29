@@ -45,7 +45,7 @@ class PermissionManager{
         // Also update sub-title for admin page or sidebar profile label
         const sideElement = document.querySelector('.brand-subtitle');
         if (sideElement){
-            sideElement.textContent = this.user.level === 'admin' ? 'Administrator' : this.user.level === 'operator' ? 'Operador' : 'Cliente';
+            sideElement.textContent = this.user.level === 'admin' ? 'Administrator' : this.user.level === 'operator' ? 'Operador' : 'Solicitante';
         }
     }
 }

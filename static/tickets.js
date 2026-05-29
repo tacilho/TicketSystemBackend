@@ -158,8 +158,7 @@ function abrirDetalhes(id) {
                 footer.style.justifyContent = 'center';
             } else {
                 footer.innerHTML = `
-                    <button class="btn-cancelar" onclick="reabrirTicket(${ticket.id})"><i class="fa-solid fa-lock-open"></i> Reabrir</button>
-                    <span style="color: #666; font-size: 0.9rem; font-weight: 500; margin-left: 10px;"><i class="fa-solid fa-lock" style="margin-right: 5px;"></i>Este ticket foi concluído.</span>
+                    <button class="btn-reabrir" onclick="reabrirTicket(${ticket.id})"><i class="fa-solid fa-lock-open"></i> Reabrir</button>
                 `;
                 footer.style.justifyContent = 'center';
             }
@@ -171,6 +170,7 @@ function abrirDetalhes(id) {
     const chatAttach = document.getElementById('chatAttach');
     const btnSendMessage = document.querySelector('.btn-send-message');
     const btnAttach = document.querySelector('.btn-attach');
+    const chatBlockedBanner = document.getElementById('chatBlockedBanner');
     
     if (chatInput && chatAttach && btnSendMessage && btnAttach) {
         if (ticket.status === 'concluido') {
@@ -180,6 +180,7 @@ function abrirDetalhes(id) {
             btnAttach.style.pointerEvents = 'none';
             btnAttach.style.opacity = '0.5';
             chatInput.placeholder = 'Ticket fechado. Reabra para enviar mensagens.';
+            if(chatBlockedBanner) chatBlockedBanner.classList.remove('oculto');
         } else {
             chatInput.disabled = false;
             chatAttach.disabled = false;
@@ -187,6 +188,7 @@ function abrirDetalhes(id) {
             btnAttach.style.pointerEvents = 'auto';
             btnAttach.style.opacity = '1';
             chatInput.placeholder = 'Escreva uma mensagem...';
+            if(chatBlockedBanner) chatBlockedBanner.classList.add('oculto');
         }
     }
 

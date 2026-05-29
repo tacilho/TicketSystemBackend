@@ -348,6 +348,12 @@ body {
 }
 .btn-confirmar:hover { background-color: rgba(30, 163, 42, 0.1); }
 
+.btn-reabrir {
+    background-color: transparent; color: #f59e0b; border: 2px solid #f59e0b;
+    padding: 10px 40px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s;
+}
+.btn-reabrir:hover { background-color: rgba(245, 158, 11, 0.1); }
+
 /* =========================================
    SEÇÃO DE CHAT / MENSAGENS E ANEXOS
    ========================================= */

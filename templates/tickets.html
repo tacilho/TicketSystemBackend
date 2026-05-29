@@ -39,9 +39,7 @@
                 <a href="{{ url_for('relatorios') }}" class="nav-item-modern" data-nivel="operator">
                     <i class="fa-solid fa-chart-line"></i> Relatórios
                 </a>
-                <a href="#" class="nav-item-modern" data-nivel="admin">
-                    <i class="fa-solid fa-gear"></i> Configurações
-                </a>
+
                 <a href="/logout" class="btn-logout-sidebar">
                     <i class="fa-solid fa-right-from-bracket"></i> Sair
                 </a>
@@ -57,7 +55,7 @@
             <div class="client-header oculto" id="headerCliente">
                 <button class="btn-green" onclick="abrirTicket()">Abrir Ticket</button>
                 <button class="btn-profile"> 
-                    <i class="fa-regular fa-user-circle"></i> Meu Perfil
+                    <i class="fa-regular fa-user-circle"></i>
                 </button>
             </div>
 
@@ -85,7 +83,7 @@
                             <div>
                                 <h3 id="detalheTitulo" class="detalhe-titulo">Título #000</h3>
                             </div>
-                            <div id="detalheCliente" class="detalhe-cliente">Nome do Cliente</div>
+                            <div id="detalheCliente" class="detalhe-cliente">Nome do Solicitante</div>
                         </div>
 
                         <!-- Compact Description -->
@@ -96,8 +94,13 @@
                         <!-- Chat Section -->
                         <div class="chat-section">
                             <h4 class="chat-title"><i class="fa-solid fa-comments"></i> Mensagens</h4>
-                            <div class="chat-feed" id="chatFeed">
-                                <!-- Messages will load dynamically here -->
+                            <div id="chatFeed" class="chat-feed">
+                            <!-- Mensagens dinâmicas -->
+                            </div>
+                        
+                            <!-- Banner de ticket fechado -->
+                            <div id="chatBlockedBanner" class="oculto" style="background-color: #fff3cd; color: #856404; padding: 12px; text-align: center; border-radius: 8px; font-weight: 500; margin-bottom: 15px; border: 1px solid #ffeeba; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <i class="fa-solid fa-lock"></i> Este ticket foi concluído. O envio de mensagens está bloqueado.
                             </div>
                             
                             <form id="chatForm" onsubmit="enviarMensagem(event)" class="chat-input-area" enctype="multipart/form-data">

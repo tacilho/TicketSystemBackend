@@ -48,10 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${user.nivel === 'admin' ? 'Administrador' : user.nivel === 'operator' ? 'Operador' : 'Usuário'}</td>
                     <td>${user.data}</td>
                     <td>
-                        <button class="btn-editar" onclick="editarUsuario(${user.id})" title="Editar" style="color: #3498db; background: none; border: none; cursor: pointer; font-size: 1.1rem; margin-right: 10px;">
+                        <button class="btn-icon edit" onclick="editarUsuario(${user.id})" title="Editar">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="btn-excluir" onclick="excluirUsuario(${user.id})" title="Excluir Usuário" style="color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 1.1rem;">
+                        <button class="btn-icon delete" onclick="excluirUsuario(${user.id})" title="Excluir Usuário">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -73,10 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${cliente.usuario}</td>
                     <td>${cliente.data}</td>
                     <td>
-                        <button class="btn-editar" onclick="editarCliente(${cliente.id})" title="Editar" style="color: #3498db; background: none; border: none; cursor: pointer; font-size: 1.1rem; margin-right: 10px;">
+                        <button class="btn-icon edit" onclick="editarCliente(${cliente.id})" title="Editar">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="btn-excluir" onclick="excluirCliente(${cliente.id})" title="Excluir Cliente" style="color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 1.1rem;">
+                        <button class="btn-icon delete" onclick="excluirCliente(${cliente.id})" title="Excluir Solicitante">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -96,10 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${setor.responsavel}</td>
                     <td>${setor.data}</td>
                     <td>
-                        <button class="btn-editar" onclick="editarSetor(${setor.id})" title="Editar" style="color: #3498db; background: none; border: none; cursor: pointer; font-size: 1.1rem; margin-right: 10px;">
+                        <button class="btn-icon edit" onclick="editarSetor(${setor.id})" title="Editar">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="btn-excluir" onclick="excluirSetor(${setor.id})" title="Excluir Setor" style="color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 1.1rem;">
+                        <button class="btn-icon delete" onclick="excluirSetor(${setor.id})" title="Excluir Setor">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => {
                 if (!res.ok) {
                     return res.json().then(json => {
-                        throw new Error(json.error || 'Erro ao salvar cliente');
+                        throw new Error(json.error || 'Erro ao salvar solicitante');
                     });
                 }
                 return res.json();
@@ -380,7 +380,7 @@ function editarCliente(id) {
             if(cliente) {
                 abrirModal('cliente');
                 document.getElementById('edit-cliente-id').value = cliente.id;
-                document.getElementById('titulo-modal-cliente').textContent = "Editar Cliente";
+                document.getElementById('titulo-modal-cliente').textContent = "Editar Solicitante";
                 const form = document.getElementById('form-cliente');
                 form.querySelector('[name="cliente"]').value = cliente.cliente;
                 form.querySelector('[name="email"]').value = cliente.email;
@@ -392,7 +392,7 @@ function editarCliente(id) {
 }
 
 function excluirCliente(id) {
-    if (confirm("Tem certeza que deseja excluir este cliente?")) {
+    if (confirm("Tem certeza que deseja excluir este solicitante?")) {
         fetch(`/api/clients/${id}`, { method: 'DELETE' })
         .then(res => res.json())
         .then(() => document.location.reload())

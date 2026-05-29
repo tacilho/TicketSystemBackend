@@ -50,7 +50,7 @@
             
             <header class="top-header">
                 <button class="btn-profile">
-                    <i class="fa-regular fa-user-circle"></i> Meu Perfil
+                    <i class="fa-regular fa-user-circle"></i>
                 </button>
             </header>
 
@@ -86,14 +86,14 @@
 
                     <div class="data-panel">
                         <div class="panel-header">
-                            <h2>Clientes</h2>
-                            <button class="btn-novo" onclick="abrirModal('cliente')">Novo Cliente</button>
+                            <h2>Solicitantes</h2>
+                            <button class="btn-novo" onclick="abrirModal('cliente')">Novo Solicitante</button>
                         </div>
                         <div class="table-container">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>Cliente</th>
+                                        <th>Solicitante</th>
                                         <th>E-mail</th>
                                         <th>Setor</th>
                                         <th>Usuário</th>
@@ -140,6 +140,7 @@
 
     <div id="modal-usuario" class="cadastro-modal-overlay oculto">
         <div class="cadastro-modal-box">
+            <button type="button" class="modal-close-btn" onclick="fecharModal('modal-usuario')"><i class="fa-solid fa-times"></i></button>
             <h2 class="cadastro-modal-title" id="titulo-modal-usuario">Cadastro de Usuários</h2>
             
             <form id="form-usuario">
@@ -187,13 +188,14 @@
 
     <div id="modal-cliente" class="cadastro-modal-overlay oculto">
         <div class="cadastro-modal-box">
-            <h2 class="cadastro-modal-title" id="titulo-modal-cliente">Cadastro de Clientes</h2>
+            <button type="button" class="modal-close-btn" onclick="fecharModal('modal-cliente')"><i class="fa-solid fa-times"></i></button>
+            <h2 class="cadastro-modal-title" id="titulo-modal-cliente">Cadastro de Solicitantes</h2>
             
             <form id="form-cliente">
                 <input type="hidden" id="edit-cliente-id" name="id">
                 <div class="cadastro-input-row">
                     <div class="cadastro-input-group">
-                        <label>Cliente:</label>
+                        <label>Solicitante:</label>
                         <input type="text" name="cliente" required>
                     </div>
                     <div class="cadastro-input-group">
@@ -225,6 +227,7 @@
 
     <div id="modal-setor" class="cadastro-modal-overlay oculto">
         <div class="cadastro-modal-box">
+            <button type="button" class="modal-close-btn" onclick="fecharModal('modal-setor')"><i class="fa-solid fa-times"></i></button>
             <h2 class="cadastro-modal-title" id="titulo-modal-setor">Cadastro de Setores</h2>
             
             <form id="form-setor">
