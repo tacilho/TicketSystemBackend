@@ -70,9 +70,14 @@
                           <option value="">Todos os Operadores</option>
                       </select>
                   </div>
-                  <button onclick="carregarRelatorios()" class="btn-green" style="padding: 10px 24px; background: #27ae60; border-radius: 6px; height: 42px; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; cursor: pointer; color: white; font-weight: 500; font-size: 0.95rem; transition: background 0.2s;">
-                      <i class="fa-solid fa-filter"></i> Aplicar Filtros
-                  </button>
+                  <div style="display: flex; gap: 10px; align-items: flex-end;">
+                      <button onclick="limparFiltros()" class="btn-limpar" style="padding: 10px 16px; background: white; border: 1px solid #d1d5db; border-radius: 6px; height: 42px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; color: #4b5563; font-weight: 500; font-size: 0.95rem; transition: all 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'" title="Limpar todos os filtros">
+                          <i class="fa-solid fa-eraser"></i> Limpar
+                      </button>
+                      <button onclick="carregarRelatorios()" class="btn-green" style="padding: 10px 24px; background: #27ae60; border-radius: 6px; height: 42px; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; cursor: pointer; color: white; font-weight: 500; font-size: 0.95rem; transition: background 0.2s;">
+                          <i class="fa-solid fa-filter"></i> Aplicar Filtros
+                      </button>
+                  </div>
               </div>
 
               <div class="stats-grid-modern" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
@@ -155,6 +160,13 @@
                               });
                           }
                       });
+              }
+
+              function limparFiltros() {
+                  document.getElementById('filterDataInicio').value = '';
+                  document.getElementById('filterDataFim').value = '';
+                  document.getElementById('filterOperador').value = '';
+                  carregarRelatorios();
               }
 
               function carregarRelatorios() {

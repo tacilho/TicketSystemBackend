@@ -155,13 +155,7 @@ with app.app_context():
         gabriel = Client(name='Gabriel Otacilio', email='gabriel.trans@gmail.com', sector='Expedição', username='Gabriel Otacilio')
         db.session.add(gabriel)
 
-    # Check if default tickets exist, if not, create them
-    if not Ticket.query.first():
-        u_pedro = User.query.filter_by(email='teste@gmail.com').first()
-        t1 = Ticket(client_id=None, client_name='Jair Bolsonaro', title='Queda da Rede', description='A internet caiu no setor de faturamento. Computadores sem acesso ao sistema local.', status='aberto')
-        t2 = Ticket(client_id=None, client_name='Maria Silva', title='Impressora com Erro', description='A impressora do RH está atolando papel toda vez que tentamos imprimir o espelho de ponto.', status='aberto')
-        t3 = Ticket(client_id=u_pedro.id if u_pedro else None, client_name='Pedro', title='Acesso Negado', description='Não consigo fazer login no sistema ERP, diz que a senha expirou.', status='em andamento')
-        db.session.add_all([t1, t2, t3])
+    # A criação de chamados mockados foi removida a pedido do usuário
 
     db.session.commit()
 
