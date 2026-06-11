@@ -269,19 +269,40 @@ def api_reports():
     if not user or user.role == 'user':
         return jsonify({'error': 'Acesso negado'}), 403
 
-    total = Ticket.query.count()
-    aguardando = Ticket.query.filter_by(status='aberto').count()
-    em_atendimento = Ticket.query.filter_by(status='em andamento').count()
-    concluido = Ticket.query.filter_by(status='fechado').count()
+    data_inicio = request.args.get('data_inicio')
+    data_fim = request.args.get('data_fim')
+    operador_id = request.args.get('operador_id')
+
+    base_query = db.session.query(Ticket)
+    
+    if data_inicio:
+        try:
+            start_dt = datetime.datetime.strptime(data_inicio, '%Y-%m-%d')
+            base_query = base_query.filter(Ticket.created_at >= start_dt)
+        except ValueError:
+            pass
+            
+    if data_fim:
+        try:
+            end_dt = datetime.datetime.strptime(data_fim, '%Y-%m-%d').replace(hour=23, minute=59, second=59)
+            base_query = base_query.filter(Ticket.created_at <= end_dt)
+        except ValueError:
+            pass
+            
+    if operador_id and operador_id.isdigit() and int(operador_id) > 0:
+        base_query = base_query.filter(Ticket.operator_id == int(operador_id))
+
+    total = base_query.count()
+    aguardando = base_query.filter(Ticket.status == 'aberto').count()
+    em_atendimento = base_query.filter(Ticket.status == 'em andamento').count()
+    concluido = base_query.filter(Ticket.status == 'fechado').count()
 
     from sqlalchemy import func
-    cliente_counts = db.session.query(Ticket.client_name, func.count(Ticket.id)).group_by(Ticket.client_name).all()
+    
+    cliente_counts = base_query.with_entities(Ticket.client_name, func.count(Ticket.id)).group_by(Ticket.client_name).all()
     tickets_por_cliente = [{'cliente': c[0], 'count': c[1]} for c in cliente_counts]
 
-    # Tickets por operador
-    operador_counts = db.session.query(User.name, func.count(Ticket.id))\
-        .join(Ticket, Ticket.operator_id == User.id)\
-        .group_by(User.name).all()
+    operador_counts = base_query.join(User, Ticket.operator_id == User.id).with_entities(User.name, func.count(Ticket.id)).group_by(User.name).all()
     tickets_por_operador = [{'operador': o[0], 'count': o[1]} for o in operador_counts]
 
     tickets_por_status = [

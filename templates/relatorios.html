@@ -54,6 +54,27 @@
           </div>
 
           <div style="padding: 40px;">
+              <!-- FILTER BAR -->
+              <div class="filter-bar" style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <label style="font-weight: 500; font-size: 0.9rem; color: #4b5563;">Data Inicial</label>
+                      <input type="date" id="filterDataInicio" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; font-family: inherit;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <label style="font-weight: 500; font-size: 0.9rem; color: #4b5563;">Data Final</label>
+                      <input type="date" id="filterDataFim" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; font-family: inherit;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; max-width: 300px;">
+                      <label style="font-weight: 500; font-size: 0.9rem; color: #4b5563;">Operador</label>
+                      <select id="filterOperador" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; font-family: inherit; width: 100%;">
+                          <option value="">Todos os Operadores</option>
+                      </select>
+                  </div>
+                  <button onclick="carregarRelatorios()" class="btn-green" style="padding: 10px 24px; background: #27ae60; border-radius: 6px; height: 42px; display: flex; align-items: center; justify-content: center; gap: 8px; border: none; cursor: pointer; color: white; font-weight: 500; font-size: 0.95rem; transition: background 0.2s;">
+                      <i class="fa-solid fa-filter"></i> Aplicar Filtros
+                  </button>
+              </div>
+
               <div class="stats-grid-modern" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                   <div class="stat-card-modern" style="border-left-color: #3b82f6;">
                       <div class="stat-card-icon" style="color: #3b82f6; background: rgba(59,130,246,0.1);">
@@ -114,7 +135,39 @@
 
           <script>
               document.addEventListener('DOMContentLoaded', () => {
-                  fetch('/api/reports')
+                  carregarOperadores();
+                  carregarRelatorios();
+              });
+
+              function carregarOperadores() {
+                  fetch('/api/users')
+                      .then(res => res.json())
+                      .then(users => {
+                          if(Array.isArray(users)) {
+                              const select = document.getElementById('filterOperador');
+                              users.forEach(u => {
+                                  if(u.nivel === 'operator' || u.nivel === 'admin') {
+                                      const option = document.createElement('option');
+                                      option.value = u.id;
+                                      option.textContent = u.usuario;
+                                      select.appendChild(option);
+                                  }
+                              });
+                          }
+                      });
+              }
+
+              function carregarRelatorios() {
+                  const dataInicio = document.getElementById('filterDataInicio').value;
+                  const dataFim = document.getElementById('filterDataFim').value;
+                  const operadorId = document.getElementById('filterOperador').value;
+
+                  let url = '/api/reports?';
+                  if(dataInicio) url += `data_inicio=${dataInicio}&`;
+                  if(dataFim) url += `data_fim=${dataFim}&`;
+                  if(operadorId) url += `operador_id=${operadorId}&`;
+
+                  fetch(url)
                       .then(res => res.json())
                       .then(data => {
                           if(!data.error) {
@@ -187,7 +240,7 @@
                           }
                       })
                       .catch(err => console.error(err));
-              });
+              }
           </script>
       </main>
 
