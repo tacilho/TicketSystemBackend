@@ -134,42 +134,6 @@ class Message(db.Model):
             'created_at': self.created_at.strftime('%H:%M - %d/%m/%Y')
         }
 
-# --- DATABASE INITIALIZATION ---
-with app.app_context():
-    # ATENÇÃO: db.drop_all() foi removido. NUNCA use isso em produção!
-    db.create_all()
-    try:
-        # Check if default users exist, if not, create them
-        if not User.query.filter_by(email='suporte@gmail.com').first():
-            support = User(name='Suporte', email='suporte@gmail.com', password=generate_password_hash('123'), role='operator', is_admin=False)
-            db.session.add(support)
-        if not User.query.filter_by(email='adm@123').first():
-            admin = User(name='Administrador', email='adm@123', password=generate_password_hash('admin'), role='admin', is_admin=True)
-            db.session.add(admin)
-        if not User.query.filter_by(email='teste@gmail.com').first():
-            client_user = User(name='Pedro', email='teste@gmail.com', password=generate_password_hash('teste'), role='user', is_admin=False)
-            db.session.add(client_user)
-            
-        db.session.commit()
-            
-        # Check if default sectors exist, if not, create them
-        if not Sector.query.filter_by(name='Expedição').first():
-            expedicao = Sector(name='Expedição', manager='Gabriel Otacilio')
-            db.session.add(expedicao)
-
-        # Check if default clients exist, if not, create them
-        if not Client.query.filter_by(name='Gabriel Otacilio').first():
-            gabriel = Client(name='Gabriel Otacilio', email='gabriel.trans@gmail.com', sector='Expedição', username='Gabriel Otacilio')
-            db.session.add(gabriel)
-
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        print(f"Aviso de inicializacao do banco (ignorado): {e}")
-
-    # A criação de chamados mockados foi removida a pedido do usuário
-
-    db.session.commit()
 
 # --- WEB TEMPLATE ROUTES ---
 @app.route('/')
