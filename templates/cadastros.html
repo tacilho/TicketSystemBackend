@@ -15,10 +15,10 @@
 <body>
     <div class="layout-container">
         
-        <nav class="sidebar">
-            <div class="brand-area">
+        <nav class="sidebar-modern">
+            <div class="brand-area-modern">
                 <i class="fa-solid fa-tags logo-icon"></i>
-                <div class="brand-text">
+                <div class="brand-text-container">
                     <div class="brand-title"><strong>Ticket</strong>System</div>
                     <div class="brand-subtitle">Administrator</div>
                 </div>
@@ -28,18 +28,19 @@
             </div>
 
             <div class="nav-links">
-                <a href="{{ url_for('home') }}" class="nav-item">
+                <a href="{{ url_for('home') }}" class="nav-item-modern" data-nivel="operator">
                     <i class="fa-solid fa-border-all"></i> Home
                 </a>
-                <a href="{{ url_for('tickets') }}" class="nav-item">
+                <a href="{{ url_for('tickets') }}" class="nav-item-modern">
                     <i class="fa-solid fa-ticket-alt"></i> Tickets
                 </a>
-                <a href="{{ url_for('relatorios') }}" class="nav-item">
+                <a href="{{ url_for('relatorios') }}" class="nav-item-modern" data-nivel="operator">
                     <i class="fa-solid fa-chart-line"></i> Relatórios
                 </a>
-                <a href="#" class="nav-item active">
+                <a href="{{ url_for('cadastros') }}" class="nav-item-modern active" data-nivel="admin">
                     <i class="fa-solid fa-folder-plus"></i> Cadastros
                 </a>
+
                 <a href="/logout" class="btn-logout-sidebar">
                     <i class="fa-solid fa-right-from-bracket"></i> Sair
                 </a>
@@ -72,6 +73,7 @@
                                     <tr>
                                         <th>Usuário</th>
                                         <th>E-mail</th>
+                                        <th>Telefone</th>
                                         <th>Setor</th>
                                         <th>Nível de Acesso</th>
                                         <th>Data de Cadastro</th>
@@ -95,6 +97,7 @@
                                     <tr>
                                         <th>Solicitante</th>
                                         <th>E-mail</th>
+                                        <th>Telefone</th>
                                         <th>Setor</th>
                                         <th>Usuário</th>
                                         <th>Data de Cadastro</th>
@@ -161,13 +164,25 @@
                         <label>Senha:</label>
                         <input type="password" name="senha" required>
                     </div>
+                    <div class="cadastro-input-group">
+                        <label>Telefone:</label>
+                        <input type="text" name="telefone">
+                    </div>
+                </div>
+                
+                <div class="cadastro-input-row">
                     <div class="cadastro-input-group" style="flex-direction: row; gap: 20px;">
                         <div class="cadastro-input-group">
                             <label>Nível de Acesso:</label>
                             <select name="nivel" id="select-nivel-usuario">
-                                <option value="usuario">Usuário</option>
+                                <option value="user">Usuário</option>
                                 <option value="operator">Operador</option>
+                                <option value="admin">Admin (Legado)</option>
                             </select>
+                        </div>
+                        <div class="cadastro-input-group" style="flex-direction: row; align-items: center; justify-content: flex-start; padding-top: 25px;">
+                            <input type="checkbox" name="is_admin" id="is_admin_check" style="width: auto;">
+                            <label for="is_admin_check" style="margin-left: 8px;">Administrador</label>
                         </div>
                         <div class="cadastro-input-group">
                             <label>Setor:</label>
@@ -206,9 +221,16 @@
                 
                 <div class="cadastro-input-row">
                     <div class="cadastro-input-group">
-                        <label>Usuário:</label>
+                        <label>Telefone:</label>
+                        <input type="text" name="telefone">
+                    </div>
+                    <div class="cadastro-input-group">
+                        <label>Usuário de Login:</label>
                         <input type="text" name="usuario" required>
                     </div>
+                </div>
+                
+                <div class="cadastro-input-row">
                     <div class="cadastro-input-group">
                         <label>Setor:</label>
                             <select name="setor">

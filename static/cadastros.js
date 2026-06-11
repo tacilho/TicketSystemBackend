@@ -44,8 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <tr>
                     <td>${user.usuario}</td>
                     <td>${user.email}</td>
+                    <td>${user.telefone || ''}</td>
                     <td>${user.setor || 'Nenhum'}</td>
-                    <td>${user.nivel === 'admin' ? 'Administrador' : user.nivel === 'operator' ? 'Operador' : 'Usuário'}</td>
+                    <td>${user.is_admin ? 'Administrador' : user.nivel === 'operator' ? 'Operador' : 'Usuário'}</td>
                     <td>${user.data}</td>
                     <td>
                         <button class="btn-icon edit" onclick="editarUsuario(${user.id})" title="Editar">
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <tr>
                     <td>${cliente.cliente}</td>
                     <td>${cliente.email}</td>
+                    <td>${cliente.telefone || ''}</td>
                     <td>${cliente.setor || 'Nenhum'}</td>
                     <td>${cliente.usuario}</td>
                     <td>${cliente.data}</td>
@@ -134,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const formData = new FormData(formUser);
             const data = Object.fromEntries(formData.entries());
+            data.is_admin = formUser.querySelector('[name="is_admin"]') ? formUser.querySelector('[name="is_admin"]').checked : false;
             const userId = document.getElementById('edit-usuario-id').value;
             
             const method = userId ? 'PUT' : 'POST';
@@ -157,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fecharModal('modal-usuario');
                 formUser.reset();
             })
-            .catch(err => alert(err.message));
+            .catch(err => showToast(err.message, 'error'));
         });
     }
 
@@ -191,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fecharModal('modal-cliente');
                 formCliente.reset();
             })
-            .catch(err => alert(err.message));
+            .catch(err => showToast(err.message, 'error'));
         });
     }
 
@@ -225,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fecharModal('modal-setor');
                 formSetor.reset();
             })
-            .catch(err => alert(err.message));
+            .catch(err => showToast(err.message, 'error'));
         });
     }
 
@@ -317,7 +320,7 @@ function restoreSidebarState() {
 }
 
 function excluirUsuario(id) {
-    if (confirm("Tem certeza que deseja excluir este usuário? O acesso dele será revogado.")) {
+    showConfirmModal("Excluir Usuário", "Tem certeza que deseja excluir este usuário? O acesso dele será revogado.", function() {
         fetch(`/api/users/${id}`, {
             method: 'DELETE'
         })
@@ -332,8 +335,8 @@ function excluirUsuario(id) {
         .then(() => {
             document.location.reload();
         })
-        .catch(err => alert(err.message));
-    }
+        .catch(err => showToast(err.message, 'error'));
+    });
 }
 
 function editarUsuario(id) {
@@ -348,6 +351,8 @@ function editarUsuario(id) {
                 const form = document.getElementById('form-usuario');
                 form.querySelector('[name="usuario"]').value = user.usuario;
                 form.querySelector('[name="email"]').value = user.email;
+                if(form.querySelector('[name="telefone"]')) form.querySelector('[name="telefone"]').value = user.telefone || '';
+                if(form.querySelector('[name="is_admin"]')) form.querySelector('[name="is_admin"]').checked = user.is_admin;
                 
                 const selectNivel = document.getElementById('select-nivel-usuario');
                 if(selectNivel) {
@@ -385,6 +390,7 @@ function editarCliente(id) {
                 form.querySelector('[name="cliente"]').value = cliente.cliente;
                 form.querySelector('[name="email"]').value = cliente.email;
                 form.querySelector('[name="usuario"]').value = cliente.usuario;
+                if(form.querySelector('[name="telefone"]')) form.querySelector('[name="telefone"]').value = cliente.telefone || '';
                 const selectSetor = form.querySelector('[name="setor"]');
                 if(selectSetor && cliente.setor) selectSetor.value = cliente.setor;
             }
@@ -392,12 +398,12 @@ function editarCliente(id) {
 }
 
 function excluirCliente(id) {
-    if (confirm("Tem certeza que deseja excluir este solicitante?")) {
+    showConfirmModal("Excluir Solicitante", "Tem certeza que deseja excluir este solicitante?", function() {
         fetch(`/api/clients/${id}`, { method: 'DELETE' })
         .then(res => res.json())
         .then(() => document.location.reload())
-        .catch(err => alert(err.message));
-    }
+        .catch(err => showToast(err.message, 'error'));
+    });
 }
 
 function editarSetor(id) {
@@ -417,12 +423,12 @@ function editarSetor(id) {
 }
 
 function excluirSetor(id) {
-    if (confirm("Tem certeza que deseja excluir este setor?")) {
+    showConfirmModal("Excluir Setor", "Tem certeza que deseja excluir este setor?", function() {
         fetch(`/api/sectors/${id}`, { method: 'DELETE' })
         .then(res => res.json())
         .then(() => document.location.reload())
-        .catch(err => alert(err.message));
-    }
+        .catch(err => showToast(err.message, 'error'));
+    });
 }
 
 document.addEventListener('DOMContentLoaded', restoreSidebarState);

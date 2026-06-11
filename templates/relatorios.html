@@ -4,121 +4,110 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{url_for('static', filename='styles.css' )}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='tickets.css' )}}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   
   <script src="{{ url_for('static' , filename='pageManager.js')}}"></script>
   <script src="{{ url_for('static' , filename='tickets.js')}}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <title>Relatórios</title>
 </head>
 <body>
   <div class="layout-container">
       
-      <div class="brand-area">
-          <i class="fa-solid fa-tags logo-icon"></i>
-          <div class="brand-text-container">
-              <div class="brand-title"><strong>Ticket</strong>System</div>
-              <div class="brand-subtitle">Administrator</div>
+      <nav class="sidebar-modern">
+          <div class="brand-area-modern">
+              <i class="fa-solid fa-tags logo-icon"></i>
+              <div class="brand-text-container">
+                  <div class="brand-title"><strong>Ticket</strong>System</div>
+                  <div class="brand-subtitle">Administrator</div>
+              </div>
+              <button class="btn-toggle-sidebar" onclick="toggleSidebar()" title="Recolher Menu">
+                  <i class="fa-solid fa-chevron-left" id="toggleIcon"></i>
+              </button>
           </div>
-          <button class="btn-toggle-sidebar" onclick="toggleSidebar()" title="Recolher Menu">
-              <i class="fa-solid fa-chevron-left" id="toggleIcon"></i>
-          </button>
-      </div>
 
-      <header class="top-header">
-          <button class="btn-green" onclick="abrirTicket()">Abrir Ticket</button>
-          <button class="btn-profile">
-              <i class="fa-regular fa-user-circle"></i>
-          </button>
-      </header>
-
-      <nav class="sidebar">
-          <a href="{{ url_for('home') }}" class="nav-item" data-nivel="operator">
-              <i class="fa-solid fa-border-all"></i>
-              Home
-          </a>
-          <a href="{{ url_for('tickets') }}" class="nav-item">
-              <i class="fa-solid fa-ticket-alt"></i>
-              Tickets
-          </a>
-          <a href="{{ url_for('relatorios') }}" class="nav-item active" data-nivel="operator">
-              <i class="fa-solid fa-chart-line"></i>
-              Relatórios
-          </a>
-           <a href="{{ url_for('cadastros') }}" class="nav-item" data-nivel="admin">
+          <div class="nav-links">
+              <a href="{{ url_for('home') }}" class="nav-item-modern" data-nivel="operator">
+                  <i class="fa-solid fa-border-all"></i> Home
+              </a>
+              <a href="{{ url_for('tickets') }}" class="nav-item-modern">
+                  <i class="fa-solid fa-ticket-alt"></i> Tickets
+              </a>
+              <a href="{{ url_for('relatorios') }}" class="nav-item-modern active" data-nivel="operator">
+                  <i class="fa-solid fa-chart-line"></i> Relatórios
+              </a>
+              <a href="{{ url_for('cadastros') }}" class="nav-item-modern" data-nivel="admin">
                   <i class="fa-solid fa-folder-plus"></i> Cadastros
-          </a>
-          <a href="/logout" class="btn-logout-sidebar">
-              <i class="fa-solid fa-right-from-bracket"></i> Sair
-          </a>
+              </a>
+
+              <a href="/logout" class="btn-logout-sidebar">
+                  <i class="fa-solid fa-right-from-bracket"></i> Sair
+              </a>
+          </div>
       </nav>
 
-      <main class="main-content">
-          <div class="welcome-banner">
-              <div class="welcome-text">
-                  <h1>Relatórios do Sistema</h1>
-                  <p>Acompanhe os resultados e status gerais dos chamados.</p>
-              </div>
-              <div class="welcome-icon">
-                  <i class="fa-solid fa-chart-pie"></i>
-              </div>
+      <main class="main-content-modern" style="padding: 0;">
+          <div class="top-banner-green">
+              <h2>Relatórios <i class="fa-solid fa-chart-line"></i></h2>
           </div>
 
-          <div class="stats-grid-modern" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-              <div class="stat-card-modern" style="border-left-color: #3b82f6;">
-                  <div class="stat-card-icon" style="color: #3b82f6; background: rgba(59,130,246,0.1);">
-                      <i class="fa-solid fa-cubes"></i>
+          <div style="padding: 40px;">
+              <div class="stats-grid-modern" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                  <div class="stat-card-modern" style="border-left-color: #3b82f6;">
+                      <div class="stat-card-icon" style="color: #3b82f6; background: rgba(59,130,246,0.1);">
+                          <i class="fa-solid fa-cubes"></i>
+                      </div>
+                      <div class="stat-card-details">
+                          <div class="stat-value" id="repTotal">0</div>
+                          <div class="stat-label">Total de Tickets</div>
+                      </div>
                   </div>
-                  <div class="stat-card-details">
-                      <div class="stat-value" id="repTotal">0</div>
-                      <div class="stat-label">Total de Tickets</div>
-                  </div>
-              </div>
 
-              <div class="stat-card-modern" style="border-left-color: #ef4444;">
-                  <div class="stat-card-icon" style="color: #ef4444; background: rgba(239,68,68,0.1);">
-                      <i class="fa-solid fa-clock"></i>
+                  <div class="stat-card-modern" style="border-left-color: #ef4444;">
+                      <div class="stat-card-icon" style="color: #ef4444; background: rgba(239,68,68,0.1);">
+                          <i class="fa-solid fa-clock"></i>
+                      </div>
+                      <div class="stat-card-details">
+                          <div class="stat-value" id="repAguardando">0</div>
+                          <div class="stat-label">Aberto</div>
+                      </div>
                   </div>
-                  <div class="stat-card-details">
-                      <div class="stat-value" id="repAguardando">0</div>
-                      <div class="stat-label">Aguardando</div>
-                  </div>
-              </div>
 
-              <div class="stat-card-modern pending-tickets">
-                  <div class="stat-card-icon">
-                      <i class="fa-solid fa-spinner fa-spin-slow"></i>
+                  <div class="stat-card-modern pending-tickets">
+                      <div class="stat-card-icon">
+                          <i class="fa-solid fa-spinner fa-spin-slow"></i>
+                      </div>
+                      <div class="stat-card-details">
+                          <div class="stat-value" id="repEmAtendimento">0</div>
+                          <div class="stat-label">Em Andamento</div>
+                      </div>
                   </div>
-                  <div class="stat-card-details">
-                      <div class="stat-value" id="repEmAtendimento">0</div>
-                      <div class="stat-label">Em Atendimento</div>
-                  </div>
-              </div>
 
-              <div class="stat-card-modern" style="border-left-color: #10b981;">
-                  <div class="stat-card-icon" style="color: #10b981; background: rgba(16,185,129,0.1);">
-                      <i class="fa-solid fa-check-circle"></i>
-                  </div>
-                  <div class="stat-card-details">
-                      <div class="stat-value" id="repConcluido">0</div>
-                      <div class="stat-label">Concluídos</div>
-                  </div>
-              </div>
-          </div>
-          
-          <div class="reports-charts" style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px;">
-              <div class="chart-container" style="flex: 1; min-width: 300px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); display: flex; flex-direction: column;">
-                  <h3 style="margin-bottom: 15px; color: #333;">Atendimentos por Status</h3>
-                  <div style="position: relative; height: 300px; width: 100%; flex-grow: 1;">
-                      <canvas id="statusChart"></canvas>
+                  <div class="stat-card-modern" style="border-left-color: #10b981;">
+                      <div class="stat-card-icon" style="color: #10b981; background: rgba(16,185,129,0.1);">
+                          <i class="fa-solid fa-check-circle"></i>
+                      </div>
+                      <div class="stat-card-details">
+                          <div class="stat-value" id="repConcluido">0</div>
+                          <div class="stat-label">Fechados</div>
+                      </div>
                   </div>
               </div>
-              <div class="chart-container" style="flex: 1; min-width: 300px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); display: flex; flex-direction: column;">
-                  <h3 style="margin-bottom: 15px; color: #333;">Chamados por Solicitante</h3>
-                  <div style="position: relative; height: 300px; width: 100%; flex-grow: 1;">
-                      <canvas id="clienteChart"></canvas>
+              
+              <div class="reports-charts" style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px;">
+                  <div class="chart-container" style="flex: 1; min-width: 300px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); display: flex; flex-direction: column;">
+                      <h3 style="margin-bottom: 25px; color: #2c3e50; font-size: 1.1rem; font-weight: 700;">Atendimentos por Status</h3>
+                      <div id="statusChartContainer" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="chart-container" style="flex: 1; min-width: 300px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); display: flex; flex-direction: column;">
+                      <h3 style="margin-bottom: 25px; color: #2c3e50; font-size: 1.1rem; font-weight: 700;">Chamados por Solicitante</h3>
+                      <div id="clienteChartContainer" style="flex-grow: 1;"></div>
+                  </div>
+                  <div class="chart-container" style="flex: 1; min-width: 300px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.04); display: flex; flex-direction: column;">
+                      <h3 style="margin-bottom: 25px; color: #2c3e50; font-size: 1.1rem; font-weight: 700;">Chamados por Operador</h3>
+                      <div id="operadorChartContainer" style="flex-grow: 1;"></div>
                   </div>
               </div>
           </div>
@@ -130,81 +119,71 @@
                       .then(data => {
                           if(!data.error) {
                               document.getElementById('repTotal').textContent = data.total;
-                              document.getElementById('repAguardando').textContent = data.aguardando;
-                              document.getElementById('repEmAtendimento').textContent = data.em_atendimento;
-                              document.getElementById('repConcluido').textContent = data.concluido;
+                              document.getElementById('repAguardando').textContent = data.aberto;
+                              document.getElementById('repEmAtendimento').textContent = data.em_andamento;
+                              document.getElementById('repConcluido').textContent = data.fechado;
                               
-                              // Status Chart
-                              const ctxStatus = document.getElementById('statusChart').getContext('2d');
-                              new Chart(ctxStatus, {
-                                  type: 'pie',
-                                  data: {
-                                      labels: data.tickets_por_status.map(s => s.status),
-                                      datasets: [{
-                                          data: data.tickets_por_status.map(s => s.count),
-                                          backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
-                                          borderWidth: 0,
-                                          hoverOffset: 10
-                                      }]
-                                  },
-                                  options: {
-                                      responsive: true,
-                                      maintainAspectRatio: false,
-                                      plugins: {
-                                          legend: { 
-                                              position: 'bottom', 
-                                              labels: { font: { family: 'Inter, sans-serif', size: 14 }, padding: 20 }
-                                          }
-                                      },
-                                      layout: { padding: 20 }
-                                  }
-                              });
+                              // Custom Donut Chart (Status)
+                              const totalStatus = data.tickets_por_status.reduce((acc, curr) => acc + curr.count, 0);
+                              const abertos = data.aberto;
+                              const em_andamento = data.em_andamento;
+                              const concluidos = data.fechado;
 
-                              // Cliente Chart
-                              const ctxCliente = document.getElementById('clienteChart').getContext('2d');
-                              new Chart(ctxCliente, {
-                                  type: 'bar',
-                                  data: {
-                                      labels: data.tickets_por_cliente.map(c => c.cliente),
-                                      datasets: [{
-                                          label: 'Total de Chamados',
-                                          data: data.tickets_por_cliente.map(c => c.count),
-                                          backgroundColor: 'rgba(59, 130, 246, 0.85)',
-                                          borderColor: '#2563eb',
-                                          borderWidth: 1,
-                                          borderRadius: 6,
-                                          barPercentage: 0.5
-                                      }]
-                                  },
-                                  options: {
-                                      responsive: true,
-                                      maintainAspectRatio: false,
-                                      plugins: {
-                                          legend: { display: false },
-                                          tooltip: {
-                                              backgroundColor: 'rgba(0,0,0,0.8)',
-                                              titleFont: { family: 'Inter, sans-serif', size: 14 },
-                                              bodyFont: { family: 'Inter, sans-serif', size: 14 },
-                                              padding: 12,
-                                              cornerRadius: 8
-                                          }
-                                      },
-                                      scales: {
-                                          y: { 
-                                              beginAtZero: true, 
-                                              ticks: { stepSize: 1, font: { family: 'Inter, sans-serif' } },
-                                              grid: { borderDash: [4, 4], color: '#e5e7eb' },
-                                              border: { display: false }
-                                          },
-                                          x: { 
-                                              grid: { display: false },
-                                              ticks: { font: { family: 'Inter, sans-serif' } },
-                                              border: { display: false }
-                                          }
-                                      },
-                                      layout: { padding: 15 }
-                                  }
-                              });
+                              const pAbertos = totalStatus ? (abertos / totalStatus) * 100 : 0;
+                              const pAndamento = totalStatus ? (em_andamento / totalStatus) * 100 : 0;
+                              const pConcluidos = totalStatus ? (concluidos / totalStatus) * 100 : 0;
+
+                              const degAbertos = (pAbertos / 100) * 360;
+                              const degAndamento = degAbertos + (pAndamento / 100) * 360;
+
+                              const donutGradient = `conic-gradient(#ef4444 0deg ${degAbertos}deg, #f59e0b ${degAbertos}deg ${degAndamento}deg, #10b981 ${degAndamento}deg 360deg)`;
+
+                              document.getElementById('statusChartContainer').innerHTML = `
+                                  <div class="custom-donut-container">
+                                      <div class="custom-donut" style="background: ${donutGradient}">
+                                          <div class="custom-donut-inner">${totalStatus}</div>
+                                      </div>
+                                  </div>
+                                  <div class="custom-donut-legend">
+                                      <div class="donut-legend-item"><div class="donut-legend-color" style="background: #ef4444;"></div>Aberto (${abertos})</div>
+                                      <div class="donut-legend-item"><div class="donut-legend-color" style="background: #f59e0b;"></div>Em Andamento (${em_andamento})</div>
+                                      <div class="donut-legend-item"><div class="donut-legend-color" style="background: #10b981;"></div>Concluído (${concluidos})</div>
+                                  </div>
+                              `;
+
+                              // Custom Bar Chart (Cliente)
+                              const clientMax = Math.max(...data.tickets_por_cliente.map(c => c.count), 1);
+                              const clientHtml = data.tickets_por_cliente.map(c => {
+                                  const width = (c.count / clientMax) * 100;
+                                  return `
+                                  <div class="custom-bar-item">
+                                      <div class="custom-bar-header">
+                                          <span class="bar-label">${c.cliente}</span>
+                                          <span class="bar-value">${c.count}</span>
+                                      </div>
+                                      <div class="custom-bar-track">
+                                          <div class="custom-bar-fill" style="width: ${width}%; background-color: #3b82f6;"></div>
+                                      </div>
+                                  </div>`;
+                              }).join('');
+                              document.getElementById('clienteChartContainer').innerHTML = `<div class="custom-chart-wrapper">${clientHtml}</div>`;
+
+                              // Custom Bar Chart (Operador)
+                              const opMax = Math.max(...data.tickets_por_operador.map(o => o.count), 1);
+                              const opHtml = data.tickets_por_operador.map(o => {
+                                  const width = (o.count / opMax) * 100;
+                                  return `
+                                  <div class="custom-bar-item">
+                                      <div class="custom-bar-header">
+                                          <span class="bar-label">${o.operador}</span>
+                                          <span class="bar-value">${o.count}</span>
+                                      </div>
+                                      <div class="custom-bar-track">
+                                          <div class="custom-bar-fill" style="width: ${width}%; background-color: #10b981;"></div>
+                                      </div>
+                                  </div>`;
+                              }).join('');
+                              document.getElementById('operadorChartContainer').innerHTML = `<div class="custom-chart-wrapper">${opHtml}</div>`;
                           }
                       })
                       .catch(err => console.error(err));

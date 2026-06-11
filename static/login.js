@@ -1,3 +1,28 @@
+
+window.showToast = function(message, type = 'success') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast-msg ${type}`;
+    
+    let icon = type === 'success' ? '<i class="fa-solid fa-check-circle"></i>' : '<i class="fa-solid fa-circle-exclamation"></i>';
+    toast.innerHTML = `${icon} <span>${message}</span>`;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+};
+
 function showPasswordReset() {
     document.getElementById('password-reset').classList.remove('oculto');
 }
@@ -23,7 +48,7 @@ function checkEmail() {
     .then(() => {
         document.getElementById('reset-modal-overlay').classList.remove('oculto');
     })
-    .catch(err => alert(err.message));
+    .catch(err => showToast(err.message, 'error'));
 }
 
 function passwordReset() {
@@ -43,11 +68,11 @@ function passwordReset() {
             return res.json();
         })
         .then(() => {
-            alert('Senha alterada com sucesso!');
+            showToast('Senha alterada com sucesso!', 'success');
             closePasswordReset();
         })
-        .catch(err => alert(err.message));
+        .catch(err => showToast(err.message, 'error'));
     } else {
-        alert('O conteúdo dos campos não coincidem! Tente novamente!');
+        showToast('O conteúdo dos campos não coincidem! Tente novamente!', 'error');
     }
 }

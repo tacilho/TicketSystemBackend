@@ -28,6 +28,8 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(20), nullable=False) # 'admin', 'operator', 'user'
+    is_admin = db.Column(db.Boolean, default=False)
+    phone = db.Column(db.String(20), nullable=True)
     sector = db.Column(db.String(100), nullable=True)
     active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -37,8 +39,10 @@ class User(db.Model):
             'id': self.id,
             'usuario': self.name,
             'email': self.email,
+            'telefone': self.phone,
             'setor': self.sector,
             'nivel': self.role,
+            'is_admin': self.is_admin,
             'data': self.created_at.strftime('%d/%m/%Y')
         }
 
@@ -47,6 +51,7 @@ class Client(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=True)
     sector = db.Column(db.String(100), nullable=True)
     username = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -56,6 +61,7 @@ class Client(db.Model):
             'id': self.id,
             'cliente': self.name,
             'email': self.email,
+            'telefone': self.phone,
             'setor': self.sector,
             'usuario': self.username,
             'data': self.created_at.strftime('%d/%m/%Y')
@@ -79,16 +85,22 @@ class Sector(db.Model):
 class Ticket(db.Model):
     __tablename__ = 'tickets'
     id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     client_name = db.Column(db.String(100), nullable=False)
+    operator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    status = db.Column(db.String(50), default='aguardando') # 'aguardando', 'em_atendimento', 'concluido'
+    status = db.Column(db.String(50), default='aberto') # 'aberto', 'em andamento', 'fechado'
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def to_dict(self):
+        operator = User.query.get(self.operator_id) if self.operator_id else None
         return {
             'id': self.id,
+            'client_id': self.client_id,
             'cliente': self.client_name,
+            'operator_id': self.operator_id,
+            'operador': operator.name if operator else None,
             'titulo': self.title,
             'descricao': self.description,
             'status': self.status,
@@ -118,23 +130,20 @@ class Message(db.Model):
 
 # --- DATABASE INITIALIZATION ---
 with app.app_context():
+    db.drop_all()
     db.create_all()
     # Check if default users exist, if not, create them
     if not User.query.filter_by(email='suporte@gmail.com').first():
-        support = User(name='Suporte', email='suporte@gmail.com', password=generate_password_hash('123'), role='operator', sector='T.I.')
+        support = User(name='Suporte', email='suporte@gmail.com', password=generate_password_hash('123'), role='operator', is_admin=False)
         db.session.add(support)
     if not User.query.filter_by(email='adm@123').first():
-        admin = User(name='Administrador', email='adm@123', password=generate_password_hash('admin'), role='admin', sector='Diretoria')
+        admin = User(name='Administrador', email='adm@123', password=generate_password_hash('admin'), role='admin', is_admin=True)
         db.session.add(admin)
     if not User.query.filter_by(email='teste@gmail.com').first():
-        client_user = User(name='Pedro', email='teste@gmail.com', password=generate_password_hash('teste'), role='user', sector='Expedição')
+        client_user = User(name='Pedro', email='teste@gmail.com', password=generate_password_hash('teste'), role='user', is_admin=False)
         db.session.add(client_user)
         
-    # Migrate existing plaintext passwords
-    all_users = User.query.all()
-    for u in all_users:
-        if not u.password.startswith('scrypt:') and not u.password.startswith('pbkdf2:'):
-            u.password = generate_password_hash(u.password)
+    db.session.commit()
         
     # Check if default sectors exist, if not, create them
     if not Sector.query.filter_by(name='Expedição').first():
@@ -148,9 +157,10 @@ with app.app_context():
 
     # Check if default tickets exist, if not, create them
     if not Ticket.query.first():
-        t1 = Ticket(client_name='Jair Bolsonaro', title='Queda da Rede', description='A internet caiu no setor de faturamento. Computadores sem acesso ao sistema local.', status='aguardando')
-        t2 = Ticket(client_name='Maria Silva', title='Impressora com Erro', description='A impressora do RH está atolando papel toda vez que tentamos imprimir o espelho de ponto.', status='aguardando')
-        t3 = Ticket(client_name='Pedro', title='Acesso Negado', description='Não consigo fazer login no sistema ERP, diz que a senha expirou.', status='em_atendimento')
+        u_pedro = User.query.filter_by(email='teste@gmail.com').first()
+        t1 = Ticket(client_id=None, client_name='Jair Bolsonaro', title='Queda da Rede', description='A internet caiu no setor de faturamento. Computadores sem acesso ao sistema local.', status='aberto')
+        t2 = Ticket(client_id=None, client_name='Maria Silva', title='Impressora com Erro', description='A impressora do RH está atolando papel toda vez que tentamos imprimir o espelho de ponto.', status='aberto')
+        t3 = Ticket(client_id=u_pedro.id if u_pedro else None, client_name='Pedro', title='Acesso Negado', description='Não consigo fazer login no sistema ERP, diz que a senha expirou.', status='em andamento')
         db.session.add_all([t1, t2, t3])
 
     db.session.commit()
@@ -243,8 +253,8 @@ def api_stats():
         return jsonify({'error': 'Não logado'}), 401
     
     # Calculate stats
-    abertos = Ticket.query.filter_by(status='aguardando').count()
-    pendentes = Ticket.query.filter_by(status='em_atendimento').count()
+    abertos = Ticket.query.filter_by(status='aberto').count()
+    pendentes = Ticket.query.filter_by(status='em andamento').count()
     return jsonify({
         'abertos': abertos,
         'pendentes': pendentes
@@ -260,26 +270,33 @@ def api_reports():
         return jsonify({'error': 'Acesso negado'}), 403
 
     total = Ticket.query.count()
-    aguardando = Ticket.query.filter_by(status='aguardando').count()
-    em_atendimento = Ticket.query.filter_by(status='em_atendimento').count()
-    concluido = Ticket.query.filter_by(status='concluido').count()
+    aguardando = Ticket.query.filter_by(status='aberto').count()
+    em_atendimento = Ticket.query.filter_by(status='em andamento').count()
+    concluido = Ticket.query.filter_by(status='fechado').count()
 
     from sqlalchemy import func
     cliente_counts = db.session.query(Ticket.client_name, func.count(Ticket.id)).group_by(Ticket.client_name).all()
     tickets_por_cliente = [{'cliente': c[0], 'count': c[1]} for c in cliente_counts]
 
+    # Tickets por operador
+    operador_counts = db.session.query(User.name, func.count(Ticket.id))\
+        .join(Ticket, Ticket.operator_id == User.id)\
+        .group_by(User.name).all()
+    tickets_por_operador = [{'operador': o[0], 'count': o[1]} for o in operador_counts]
+
     tickets_por_status = [
-        {'status': 'Aguardando', 'count': aguardando},
-        {'status': 'Em Atendimento', 'count': em_atendimento},
+        {'status': 'Aberto', 'count': aguardando},
+        {'status': 'Em Andamento', 'count': em_atendimento},
         {'status': 'Concluído', 'count': concluido}
     ]
 
     return jsonify({
         'total': total,
-        'aguardando': aguardando,
-        'em_atendimento': em_atendimento,
-        'concluido': concluido,
+        'aberto': aguardando,
+        'em_andamento': em_atendimento,
+        'fechado': concluido,
         'tickets_por_cliente': tickets_por_cliente,
+        'tickets_por_operador': tickets_por_operador,
         'tickets_por_status': tickets_por_status
     })
 
@@ -303,10 +320,11 @@ def api_tickets():
             return jsonify({'error': 'Dados incompletos'}), 400
             
         new_ticket = Ticket(
+            client_id=user.id,
             client_name=user.name,
             title=data['titulo'],
             description=data['descricao'],
-            status='aguardando'
+            status='aberto'
         )
         db.session.add(new_ticket)
         db.session.commit()
@@ -323,16 +341,59 @@ def api_ticket_status(id):
     if not data or not data.get('status'):
         return jsonify({'error': 'Dados incompletos'}), 400
         
-    if ticket.status != data['status']:
-        ticket.status = data['status']
-        user = User.query.get(user_id)
+    user = User.query.get(user_id)
+    new_status = data['status']
+    
+    # Validações de regra de negócio
+    if new_status == 'em andamento' and ticket.status == 'aberto':
+        ticket.operator_id = user.id
+    elif new_status == 'fechado':
+        if ticket.operator_id and ticket.operator_id != user.id and user.role != 'admin':
+            return jsonify({'error': 'Apenas o operador vinculado ou um admin pode concluir este ticket'}), 403
+
+    if ticket.status != new_status:
+        ticket.status = new_status
         sys_msg = Message(
             ticket_id=ticket.id,
             sender_id=user.id,
             sender_name='Sistema',
-            text=f"Status alterado para '{data['status']}' por {user.name}."
+            text=f"Status alterado para '{new_status}' por {user.name}."
         )
         db.session.add(sys_msg)
+    
+    db.session.commit()
+    return jsonify(ticket.to_dict())
+
+@app.route('/api/tickets/<int:id>/transfer', methods=['PUT'])
+def api_ticket_transfer(id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'Não logado'}), 401
+    
+    ticket = Ticket.query.get_or_404(id)
+    data = request.json
+    new_operator_id = data.get('operator_id')
+    if not new_operator_id:
+        return jsonify({'error': 'Dados incompletos'}), 400
+        
+    user = User.query.get(user_id)
+    
+    if ticket.operator_id != user.id and user.role != 'admin':
+        return jsonify({'error': 'Apenas o operador atual ou um admin pode transferir este ticket'}), 403
+        
+    new_operator = User.query.get(new_operator_id)
+    if not new_operator:
+        return jsonify({'error': 'Operador não encontrado'}), 404
+        
+    ticket.operator_id = new_operator.id
+    
+    sys_msg = Message(
+        ticket_id=ticket.id,
+        sender_id=user.id,
+        sender_name='Sistema',
+        text=f"Ticket transferido para {new_operator.name} por {user.name}."
+    )
+    db.session.add(sys_msg)
     
     db.session.commit()
     return jsonify(ticket.to_dict())
@@ -354,6 +415,8 @@ def api_users():
         password = data.get('senha')
         role = data.get('nivel', 'user')
         sector = data.get('setor')
+        phone = data.get('telefone')
+        is_admin = data.get('is_admin', False)
         
         if not name or not email or not password:
             return jsonify({'error': 'Dados incompletos'}), 400
@@ -362,7 +425,7 @@ def api_users():
             return jsonify({'error': 'E-mail já cadastrado'}), 400
             
         hashed_password = generate_password_hash(password)
-        new_user = User(name=name, email=email, password=hashed_password, role=role, sector=sector)
+        new_user = User(name=name, email=email, password=hashed_password, role=role, is_admin=is_admin, phone=phone, sector=sector)
         db.session.add(new_user)
         db.session.commit()
         return jsonify(new_user.to_dict()), 201
@@ -391,6 +454,9 @@ def api_manage_user(id):
     target_user.email = data.get('email', target_user.email)
     target_user.sector = data.get('setor', target_user.sector)
     target_user.role = data.get('nivel', target_user.role)
+    target_user.phone = data.get('telefone', target_user.phone)
+    if 'is_admin' in data:
+        target_user.is_admin = data['is_admin']
     if data.get('senha'):
         target_user.password = generate_password_hash(data['senha'])
     db.session.commit()
@@ -416,6 +482,7 @@ def api_manage_client(id):
     target_client.email = data.get('email', target_client.email)
     target_client.username = data.get('usuario', target_client.username)
     target_client.sector = data.get('setor', target_client.sector)
+    target_client.phone = data.get('telefone', target_client.phone)
     db.session.commit()
     return jsonify(target_client.to_dict())
 
@@ -435,16 +502,17 @@ def api_clients():
         email = data.get('email')
         username = data.get('usuario')
         sector = data.get('setor')
+        phone = data.get('telefone')
         
         if not name or not email or not username:
             return jsonify({'error': 'Dados incompletos'}), 400
             
-        new_client = Client(name=name, email=email, username=username, sector=sector)
+        new_client = Client(name=name, email=email, username=username, phone=phone, sector=sector)
         db.session.add(new_client)
         
         if not User.query.filter_by(email=email).first():
             hashed_password = generate_password_hash('123')
-            new_user = User(name=name, email=email, password=hashed_password, role='user', sector=sector)
+            new_user = User(name=name, email=email, password=hashed_password, role='user', phone=phone, sector=sector)
             db.session.add(new_user)
             
         db.session.commit()
@@ -544,7 +612,7 @@ def send_message(ticket_id):
     if user.role == 'user' and ticket.client_name != user.name:
         return jsonify({'error': 'Acesso negado'}), 403
         
-    if ticket.status == 'concluido':
+    if ticket.status == 'fechado':
         return jsonify({'error': 'Não é possível enviar mensagens. Este ticket já está concluído.'}), 400
         
     text = request.form.get('text', '').strip()

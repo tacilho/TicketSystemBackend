@@ -1,6 +1,6 @@
 // Simulando banco de dados de tickets na memória (Carregados via API)
 let ticketsDb = [];
-let abaAtual = 'aguardando';
+let abaAtual = 'aberto';
 let ticketSelecionado = null;
 let chatInterval = null;
 
@@ -27,12 +27,12 @@ function mudarAba(aba) {
     ticketSelecionado = null; // Reseta a seleção
     
     // Atualiza botões
-    const btnAguardando = document.getElementById('btnAguardando');
-    const btnAtendimento = document.getElementById('btnAtendimento');
-    const btnConcluido = document.getElementById('btnConcluido');
-    if (btnAguardando) btnAguardando.classList.toggle('active', aba === 'aguardando');
-    if (btnAtendimento) btnAtendimento.classList.toggle('active', aba === 'em_atendimento');
-    if (btnConcluido) btnConcluido.classList.toggle('active', aba === 'concluido');
+    const btnAberto = document.getElementById('btnAberto');
+    const btnEmAndamento = document.getElementById('btnEmAndamento');
+    const btnFechado = document.getElementById('btnFechado');
+    if (btnAberto) btnAberto.classList.toggle('active', aba === 'aberto');
+    if (btnEmAndamento) btnEmAndamento.classList.toggle('active', aba === 'em andamento');
+    if (btnFechado) btnFechado.classList.toggle('active', aba === 'fechado');
     
     esconderDetalhes();
     renderizarLista();
@@ -87,13 +87,19 @@ function renderizarLista() {
     container.innerHTML = '';
     filtrados.forEach(ticket => {
         const isActive = ticketSelecionado === ticket.id ? 'active' : '';
-        const corPonto = ticket.status === 'aguardando' ? '#1ea32a' : '#f1c40f';
+        const corPonto = ticket.status === 'aberto' ? '#1ea32a' : '#f1c40f';
+
+        let operatorHtml = '';
+        if (ticket.status === 'em andamento' && ticket.operador) {
+            operatorHtml = `<span style="font-size: 0.75rem; color: #888; margin-left: auto;"><i class="fa-solid fa-headset"></i> ${ticket.operador}</span>`;
+        }
 
         const card = `
             <div class="ticket-list-card ${isActive}" onclick="abrirDetalhes(${ticket.id})">
-                <div class="card-topo">
-                    <span class="dot" style="background-color: ${corPonto};"></span>
+                <div class="card-topo" style="display: flex; align-items: center; width: 100%;">
+                    <span class="dot" style="background-color: ${corPonto}; margin-right: 8px;"></span>
                     <span class="card-cliente">${ticket.cliente}</span>
+                    ${operatorHtml}
                 </div>
                 <hr class="card-linha">
                 <div class="card-titulo">${ticket.titulo}</div>
@@ -123,6 +129,11 @@ function abrirDetalhes(id) {
     if (detalheCliente) detalheCliente.textContent = ticket.cliente;
     if (detalheDescricao) detalheDescricao.value = ticket.descricao;
 
+    const nomeOperador = document.getElementById('nomeOperador');
+    if (nomeOperador) {
+        nomeOperador.textContent = ticket.operador ? ticket.operador : 'Nenhum';
+    }
+
     // Verificamos o nível do usuário
     const isUser = window.currentUser && window.currentUser.level === 'user';
     const footer = document.getElementById('detailsFooter');
@@ -130,7 +141,7 @@ function abrirDetalhes(id) {
     if (footer) {
         // Lógica de exibição do rodapé
         if (isUser) {
-            if (ticket.status === 'concluido') {
+            if (ticket.status === 'fechado') {
                 footer.innerHTML = `
                     <button class="btn-cancelar" onclick="reabrirTicket(${ticket.id})"><i class="fa-solid fa-lock-open"></i> Reabrir Ticket</button>
                 `;
@@ -144,17 +155,22 @@ function abrirDetalhes(id) {
             // Garante que o rodapé esteja visível para Admin/Operator
             footer.style.display = 'flex'; 
 
-            if (ticket.status === 'aguardando') {
-                // SE FOR ADMIN/OPERADOR e o ticket for NOVO: Mostra o botão de Aceitar
+            if (ticket.status === 'aberto') {
                 footer.innerHTML = `
-                    <button class="btn-aceitar" onclick="aceitarTicket(${ticket.id})">Aceitar Ticket</button>
+                    <button class="btn-aceitar" onclick="aceitarTicket(${ticket.id})"><i class="fa-solid fa-hand-holding-hand"></i> Assumir Ticket</button>
                 `;
                 footer.style.justifyContent = 'center';
-            } else if (ticket.status === 'em_atendimento') {
-                // Se já estiver em atendimento, pode concluir
-                footer.innerHTML = `
-                    <button class="btn-aceitar" style="background-color: #3498db;" onclick="concluirTicket(${ticket.id})"><i class="fa-solid fa-check"></i> Concluir Ticket</button>
-                `;
+            } else if (ticket.status === 'em andamento') {
+                const isOwnerOrAdmin = window.currentUser && (window.currentUser.name === ticket.operador || window.currentUser.level === 'admin');
+                
+                if (isOwnerOrAdmin) {
+                    footer.innerHTML = `
+                        <button class="btn-aceitar" style="background-color: white; color: #27ae60; border: 2px solid #27ae60; margin-right: 10px;" onclick="abrirModalTransferir(${ticket.id})"><i class="fa-solid fa-share"></i> Transferir</button>
+                        <button class="btn-aceitar" style="background-color: #27ae60;" onclick="concluirTicket(${ticket.id})"><i class="fa-solid fa-check"></i> Concluir</button>
+                    `;
+                } else {
+                    footer.innerHTML = `<span style="color: #666; font-style: italic;"><i class="fa-solid fa-headset"></i> Sendo atendido por: ${ticket.operador}</span>`;
+                }
                 footer.style.justifyContent = 'center';
             } else {
                 footer.innerHTML = `
@@ -173,7 +189,7 @@ function abrirDetalhes(id) {
     const chatBlockedBanner = document.getElementById('chatBlockedBanner');
     
     if (chatInput && chatAttach && btnSendMessage && btnAttach) {
-        if (ticket.status === 'concluido') {
+        if (ticket.status === 'fechado') {
             chatInput.disabled = true;
             chatAttach.disabled = true;
             btnSendMessage.disabled = true;
@@ -291,7 +307,7 @@ function enviarMensagem(event) {
         removerAnexo();
         carregarMensagens(ticketSelecionado);
     })
-    .catch(err => alert(err.message));
+    .catch(err => showToast(err.message, 'error'));
 }
 
 // Verifica e exibe o anexo no formulário do chat
@@ -325,7 +341,7 @@ function aceitarTicket(id) {
     fetch(`/api/tickets/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'em_atendimento' })
+        body: JSON.stringify({ status: 'em andamento' })
     })
     .then(res => {
         if (!res.ok) throw new Error('Erro ao aceitar ticket');
@@ -333,18 +349,18 @@ function aceitarTicket(id) {
     })
     .then(() => {
         carregarTickets();
-        mudarAba('em_atendimento');
+        mudarAba('em andamento');
     })
-    .catch(err => alert(err.message));
+    .catch(err => showToast(err.message, 'error'));
 }
 
 // Função de Concluir Chamado (Chama a API do Flask)
 function concluirTicket(id) {
-    if (confirm("Deseja realmente concluir este ticket? Ele será movido para o histórico.")) {
+    showConfirmModal("Concluir Ticket", "Deseja realmente concluir este ticket? Ele será movido para o histórico.", function() {
         fetch(`/api/tickets/${id}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: 'concluido' })
+            body: JSON.stringify({ status: 'fechado' })
         })
         .then(res => {
             if (!res.ok) throw new Error('Erro ao concluir ticket');
@@ -352,19 +368,19 @@ function concluirTicket(id) {
         })
         .then(() => {
             carregarTickets();
-            mudarAba('concluido');
+            mudarAba('fechado');
         })
-        .catch(err => alert(err.message));
-    }
+        .catch(err => showToast(err.message, 'error'));
+    });
 }
 
 // Função para Reabrir o Ticket (Chama a API do Flask)
 function reabrirTicket(id) {
-    if (confirm("Deseja realmente reabrir este ticket?")) {
+    showConfirmModal("Reabrir Ticket", "Deseja realmente reabrir este ticket?", function() {
         fetch(`/api/tickets/${id}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: 'em_atendimento' })
+            body: JSON.stringify({ status: 'em andamento' })
         })
         .then(res => {
             if (!res.ok) throw new Error('Erro ao reabrir ticket');
@@ -372,14 +388,65 @@ function reabrirTicket(id) {
         })
         .then(() => {
             carregarTickets();
-            mudarAba('em_atendimento');
+            mudarAba('em andamento');
         })
-        .catch(err => alert(err.message));
+        .catch(err => showToast(err.message, 'error'));
+    });
+}
+
+function abrirModalTransferir(id) {
+    document.getElementById('transferTicketId').value = id;
+    const modal = document.getElementById('modalTransferirTicket');
+    const select = document.getElementById('selectNovoOperador');
+    
+    // Carregar operadores
+    fetch('/api/users')
+        .then(res => res.json())
+        .then(users => {
+            select.innerHTML = '<option value="">Selecione um operador...</option>';
+            users.filter(u => u.nivel === 'operator' || u.nivel === 'admin').forEach(op => {
+                select.innerHTML += `<option value="${op.id}">${op.usuario}</option>`;
+            });
+            modal.classList.remove('oculto');
+        })
+        .catch(err => console.error('Erro ao carregar operadores:', err));
+}
+
+function fecharModalTransferir() {
+    const modal = document.getElementById('modalTransferirTicket');
+    if (modal) modal.classList.add('oculto');
+}
+
+function confirmarTransferencia(event) {
+    event.preventDefault();
+    const id = document.getElementById('transferTicketId').value;
+    const novoOp = document.getElementById('selectNovoOperador').value;
+    
+    if (novoOp) {
+        fetch(`/api/tickets/${id}/transfer`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ operator_id: parseInt(novoOp) })
+        })
+        .then(res => {
+            if (!res.ok) {
+                res.json().then(data => showToast(data.error || 'Erro ao transferir', 'error'));
+                throw new Error('Erro ao transferir');
+            }
+            return res.json();
+        })
+        .then(() => {
+            showToast('Ticket transferido com sucesso!', 'success');
+            carregarTickets();
+            esconderDetalhes();
+            fecharModalTransferir();
+        })
+        .catch(err => console.error(err));
     }
 }
 
 function enviarComentario() {
-    alert('Comentário enviado com sucesso!');
+    showToast('Comentário enviado com sucesso!', 'success');
 }
 
 function esconderDetalhes() {
@@ -433,5 +500,5 @@ function salvarNovoTicket(event) {
         fecharModalTicket();
         event.target.reset();
     })
-    .catch(err => alert(err.message));
+    .catch(err => showToast(err.message, 'error'));
 }
