@@ -6,10 +6,14 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'super-secret-key-ticket-system'
+app.secret_key = os.environ.get('SECRET_KEY', 'super-secret-key-ticket-system')
 
-# Use SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ticketsystem.db'
+# Use SQLite localmente ou PostgreSQL em produção
+database_url = os.environ.get('DATABASE_URL', 'sqlite:///ticketsystem.db')
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
@@ -657,4 +661,5 @@ def send_message(ticket_id):
     return jsonify(new_message.to_dict()), 201
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port, debug=False)
