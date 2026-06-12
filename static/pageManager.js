@@ -174,13 +174,23 @@ window.showConfirmModal = function(title, message, onConfirm) {
         modal.style.zIndex = '99999';
         modal.style.display = 'flex';
         
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+        modal.style.backdropFilter = 'blur(4px)';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        
         modal.innerHTML = `
-            <div class="modal-card" style="max-width: 400px; text-align: center; padding: 30px;">
+            <div class="modal-card" style="background-color: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 400px; width: 90%; text-align: center; padding: 30px;">
                 <h2 id="confirmTitle" class="modal-title" style="margin-bottom: 15px; font-size: 1.5rem; color: #1ea32a;"></h2>
-                <p id="confirmMessage" style="color: #555; margin-bottom: 25px; line-height: 1.5;"></p>
-                <div class="modal-actions" style="margin-top: 0; justify-content: center; gap: 15px;">
-                    <button type="button" class="btn-cancelar" id="btnCancelConfirm">Cancelar</button>
-                    <button type="button" class="btn-confirmar" id="btnOkConfirm">Confirmar</button>
+                <p id="confirmMessage" style="color: #555; margin-bottom: 25px; line-height: 1.5; font-size: 1rem;"></p>
+                <div class="modal-actions" style="margin-top: 0; display: flex; justify-content: center; gap: 15px;">
+                    <button type="button" id="btnCancelConfirm" style="background-color: #c94c4c; color: #fff; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer;">Cancelar</button>
+                    <button type="button" id="btnOkConfirm" style="background-color: #00b028; color: #fff; border: none; padding: 10px 25px; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer;">Confirmar</button>
                 </div>
             </div>
         `;
