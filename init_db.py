@@ -5,8 +5,8 @@ from werkzeug.security import generate_password_hash
 def init():
     with app.app_context():
         print("Iniciando verificação do banco de dados...")
-        db.create_all()
         try:
+            db.create_all()
             # Usuários Padrão
             if not User.query.filter_by(email='suporte@gmail.com').first():
                 support = User(name='Suporte', email='suporte@gmail.com', password=generate_password_hash('123'), role='operator', is_admin=False)
