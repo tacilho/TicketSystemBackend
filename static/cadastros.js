@@ -266,16 +266,7 @@ function abrirModalUsuario(nivel) {
     const selectNivel = document.getElementById('select-nivel-usuario');
     if(selectNivel) {
         selectNivel.value = nivel;
-        selectNivel.disabled = true;
-        let hidden = document.getElementById('hidden-nivel-usuario');
-        if(!hidden) {
-            hidden = document.createElement('input');
-            hidden.type = 'hidden';
-            hidden.id = 'hidden-nivel-usuario';
-            hidden.name = 'nivel';
-            document.getElementById('form-usuario').appendChild(hidden);
-        }
-        hidden.value = nivel;
+        selectNivel.disabled = false;
     }
 }
 
@@ -356,17 +347,8 @@ function editarUsuario(id) {
                 
                 const selectNivel = document.getElementById('select-nivel-usuario');
                 if(selectNivel) {
-                    selectNivel.value = user.nivel;
-                    selectNivel.disabled = true;
-                    let hidden = document.getElementById('hidden-nivel-usuario');
-                    if(!hidden) {
-                        hidden = document.createElement('input');
-                        hidden.type = 'hidden';
-                        hidden.id = 'hidden-nivel-usuario';
-                        hidden.name = 'nivel';
-                        form.appendChild(hidden);
-                    }
-                    hidden.value = user.nivel;
+                    selectNivel.value = user.role;
+                    selectNivel.disabled = false;
                 }
                 
                 const selectSetor = form.querySelector('[name="setor"]');
