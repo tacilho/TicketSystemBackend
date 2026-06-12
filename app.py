@@ -201,6 +201,40 @@ def relatorios():
         return redirect(url_for('home'))
     return render_template('relatorios.html')
 
+@app.route('/api/init_db')
+def api_init_db():
+    try:
+        db.create_all()
+        
+        # Usuários Padrão
+        if not User.query.filter_by(email='suporte@gmail.com').first():
+            support = User(name='Suporte', email='suporte@gmail.com', password=generate_password_hash('123'), role='operator', is_admin=False)
+            db.session.add(support)
+        
+        if not User.query.filter_by(email='adm@123').first():
+            admin = User(name='Administrador', email='adm@123', password=generate_password_hash('admin'), role='admin', is_admin=True)
+            db.session.add(admin)
+            
+        if not User.query.filter_by(email='teste@gmail.com').first():
+            client_user = User(name='Pedro', email='teste@gmail.com', password=generate_password_hash('teste'), role='user', is_admin=False)
+            db.session.add(client_user)
+            
+        # Setor Padrão
+        if not Sector.query.filter_by(name='Expedição').first():
+            expedicao = Sector(name='Expedição', manager='Gabriel Otacilio')
+            db.session.add(expedicao)
+
+        # Cliente Padrão
+        if not Client.query.filter_by(name='Gabriel Otacilio').first():
+            gabriel = Client(name='Gabriel Otacilio', email='gabriel.trans@gmail.com', sector='Expedição', username='Gabriel Otacilio')
+            db.session.add(gabriel)
+
+        db.session.commit()
+        return "Banco de dados inicializado com sucesso! Pode voltar para a pagina de login (/login) e acessar o sistema."
+    except Exception as e:
+        db.session.rollback()
+        return f"Erro ao inicializar o banco: {str(e)}"
+
 # --- API ENDPOINTS ---
 @app.route('/api/me')
 def api_me():
