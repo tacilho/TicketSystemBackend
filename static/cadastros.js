@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => {
                 if (!res.ok) {
                     return res.json().then(json => {
-                        throw new Error(json.error || 'Erro ao salvar solicitante');
+                        throw new Error(json.error || 'Erro ao salvar cliente');
                     });
                 }
                 return res.json();

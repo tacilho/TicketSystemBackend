@@ -114,9 +114,9 @@ content = content.replace(
 )
 
 content = content.replace(
-'''    if (confirm("Tem certeza que deseja excluir este solicitante?")) {
+'''    if (confirm("Tem certeza que deseja excluir este cliente?")) {
         fetch(`/api/clients/${id}`, {''',
-'''    showConfirmModal("Excluir Solicitante", "Tem certeza que deseja excluir este solicitante?", function() {
+'''    showConfirmModal("Excluir Cliente", "Tem certeza que deseja excluir este cliente?", function() {
         fetch(`/api/clients/${id}`, {'''
 )
 content = content.replace(
