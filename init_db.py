@@ -6,6 +6,7 @@ def init():
     with app.app_context():
         print("Iniciando verificação do banco de dados...")
         try:
+            db.drop_all()
             db.create_all()
             # Usuários Padrão
             if not User.query.filter_by(email='suporte@gmail.com').first():
