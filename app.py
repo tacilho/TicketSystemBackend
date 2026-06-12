@@ -141,8 +141,6 @@ def index():
     if 'user_id' in session:
         user = User.query.get(session['user_id'])
         if user:
-            if user.role == 'user':
-                return redirect(url_for('tickets'))
             return redirect(url_for('home'))
     return redirect(url_for('login'))
 
@@ -155,8 +153,6 @@ def login():
         user = User.query.filter_by(email=login_val, active=True).first()
         if user and check_password_hash(user.password, senha_val):
             session['user_id'] = user.id
-            if user.role == 'user':
-                return redirect(url_for('tickets'))
             return redirect(url_for('home'))
         else:
             return redirect(url_for('login', error='invalid'))
@@ -173,8 +169,8 @@ def home():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     user = User.query.get(session['user_id'])
-    if not user or user.role == 'user':
-        return redirect(url_for('tickets'))
+    if not user:
+        return redirect(url_for('login'))
     return render_template('home.html')
 
 @app.route('/tickets')
@@ -302,7 +298,7 @@ def api_tickets():
     user = User.query.get(user_id)
     if request.method == 'GET':
         if user.role == 'user':
-            tickets = Ticket.query.filter_by(client_name=user.name).all()
+            tickets = Ticket.query.filter_by(client_id=user.id).all()
         else:
             tickets = Ticket.query.all()
         return jsonify([t.to_dict() for t in tickets])
@@ -339,6 +335,8 @@ def api_ticket_status(id):
     
     # Validações de regra de negócio
     if new_status == 'em andamento' and ticket.status == 'aberto':
+        if user.role == 'user':
+            return jsonify({'error': 'Usuários não podem assumir tickets'}), 403
         ticket.operator_id = user.id
     elif new_status == 'fechado':
         if ticket.operator_id and ticket.operator_id != user.id and user.role != 'admin':
