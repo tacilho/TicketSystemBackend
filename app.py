@@ -221,13 +221,8 @@ def api_stats():
         return jsonify({'error': 'Não logado'}), 401
     user = User.query.get(user_id)
     if user and user.role == 'user':
-        client = Client.query.filter_by(email=user.email).first()
-        if client:
-            abertos = Ticket.query.filter_by(client_id=client.id).filter(Ticket.status != 'concluido').count()
-            pendentes = Ticket.query.filter_by(client_id=client.id, status='concluido').count()
-        else:
-            abertos = 0
-            pendentes = 0
+        abertos = Ticket.query.filter_by(client_id=user.id).filter(Ticket.status != 'fechado').count()
+        pendentes = Ticket.query.filter_by(client_id=user.id, status='fechado').count()
     else:
         abertos = Ticket.query.filter_by(status='aberto').count()
         pendentes = Ticket.query.filter_by(status='em andamento').count()
