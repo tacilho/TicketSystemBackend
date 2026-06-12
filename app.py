@@ -469,11 +469,23 @@ def api_manage_client(id):
         return jsonify({'success': True})
         
     data = request.json
+    old_email = target_client.email
+    user = User.query.filter_by(email=old_email, active=True).first()
+    
     target_client.name = data.get('cliente', target_client.name)
     target_client.email = data.get('email', target_client.email)
     target_client.username = data.get('usuario', target_client.username)
     target_client.sector = data.get('setor', target_client.sector)
     target_client.phone = data.get('telefone', target_client.phone)
+    
+    if user:
+        user.name = target_client.name
+        user.email = target_client.email
+        user.sector = target_client.sector
+        user.phone = target_client.phone
+        if data.get('senha'):
+            user.password = generate_password_hash(data['senha'])
+            
     db.session.commit()
     return jsonify(target_client.to_dict())
 
@@ -502,7 +514,8 @@ def api_clients():
         db.session.add(new_client)
         
         if not User.query.filter_by(email=email).first():
-            hashed_password = generate_password_hash('123')
+            password = data.get('senha', '123')
+            hashed_password = generate_password_hash(password)
             new_user = User(name=name, email=email, password=hashed_password, role='user', phone=phone, sector=sector)
             db.session.add(new_user)
             

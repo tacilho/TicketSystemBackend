@@ -251,7 +251,7 @@ function abrirModal(tipo) {
             const idInput = document.getElementById(`edit-${tipo}-id`);
             if(idInput) idInput.value = '';
             
-            if(tipo === 'usuario') {
+            if(tipo === 'usuario' || tipo === 'cliente') {
                 const senhaInput = form.querySelector('[name="senha"]');
                 if(senhaInput) senhaInput.setAttribute('required', 'true');
             }
@@ -375,6 +375,11 @@ function editarCliente(id) {
                 if(form.querySelector('[name="telefone"]')) form.querySelector('[name="telefone"]').value = cliente.telefone || '';
                 const selectSetor = form.querySelector('[name="setor"]');
                 if(selectSetor && cliente.setor) selectSetor.value = cliente.setor;
+                const senhaInput = form.querySelector('[name="senha"]');
+                if(senhaInput) {
+                    senhaInput.removeAttribute('required');
+                    senhaInput.value = '';
+                }
             }
         });
 }
