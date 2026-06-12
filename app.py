@@ -171,7 +171,7 @@ def home():
     user = User.query.get(session['user_id'])
     if not user:
         return redirect(url_for('login'))
-    return render_template('home.html')
+    return render_template('home.html', user=user)
 
 @app.route('/tickets')
 def tickets():
@@ -219,10 +219,19 @@ def api_stats():
     user_id = session.get('user_id')
     if not user_id:
         return jsonify({'error': 'Não logado'}), 401
-    
-    # Calculate stats
-    abertos = Ticket.query.filter_by(status='aberto').count()
-    pendentes = Ticket.query.filter_by(status='em andamento').count()
+    user = User.query.get(user_id)
+    if user and user.role == 'user':
+        client = Client.query.filter_by(email=user.email).first()
+        if client:
+            abertos = Ticket.query.filter_by(client_id=client.id).filter(Ticket.status != 'concluido').count()
+            pendentes = Ticket.query.filter_by(client_id=client.id, status='concluido').count()
+        else:
+            abertos = 0
+            pendentes = 0
+    else:
+        abertos = Ticket.query.filter_by(status='aberto').count()
+        pendentes = Ticket.query.filter_by(status='em andamento').count()
+        
     return jsonify({
         'abertos': abertos,
         'pendentes': pendentes

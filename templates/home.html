@@ -55,6 +55,64 @@
         </header>
 
         <main class="main-content">
+            {% if user.role == 'user' %}
+            <div class="welcome-banner">
+                <div class="welcome-text">
+                    <h1 id="welcomeUser">Olá, Solicitante!</h1>
+                    <p>Bem-vindo de volta ao portal do TicketSystem. Aqui está o resumo das suas solicitações.</p>
+                </div>
+                <div class="welcome-icon">
+                    <i class="fa-solid fa-hands-helping"></i>
+                </div>
+            </div>
+
+            <div class="stats-grid-modern">
+                <div class="stat-card-modern open-tickets">
+                    <div class="stat-card-icon">
+                        <i class="fa-solid fa-ticket"></i>
+                    </div>
+                    <div class="stat-card-details">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Meus Tickets Abertos</div>
+                    </div>
+                </div>
+
+                <div class="stat-card-modern pending-tickets">
+                    <div class="stat-card-icon">
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <div class="stat-card-details">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Meus Tickets Concluídos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-workspace">
+                <div class="dashboard-panel quick-nav-panel">
+                    <h3 class="panel-title"><i class="fa-solid fa-rocket"></i> Atalhos Rápidos</h3>
+                    <div class="quick-nav-links">
+                        <a href="{{ url_for('tickets') }}" class="quick-nav-btn">
+                            <i class="fa-solid fa-list-ul"></i>
+                            <div>
+                                <strong>Meus Tickets</strong>
+                                <span>Acompanhar o andamento das minhas solicitações</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow-indicator"></i>
+                        </a>
+
+                        <a href="#" class="quick-nav-btn" onclick="abrirTicket()">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <div>
+                                <strong>Criar Novo Ticket</strong>
+                                <span>Abrir uma nova solicitação de atendimento</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right arrow-indicator"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
             <!-- Welcome Header Banner -->
             <div class="welcome-banner">
                 <div class="welcome-text">
@@ -124,6 +182,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </main>
 
 
