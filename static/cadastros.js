@@ -39,20 +39,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const tbody = document.getElementById('tabela-usuarios');
         if (!tbody) return;
         tbody.innerHTML = '';
-        usuariosDb.forEach(user => {
+        const filtrados = usuariosDb.filter(u => u.role !== 'user');
+        filtrados.forEach(user => {
             tbody.innerHTML += `
                 <tr>
                     <td>${user.usuario}</td>
                     <td>${user.email}</td>
                     <td>${user.telefone || ''}</td>
                     <td>${user.setor || 'Nenhum'}</td>
-                    <td>${user.is_admin ? 'Administrador' : user.nivel === 'operator' ? 'Operador' : 'Usuário'}</td>
+                    <td>${user.role === 'admin' ? 'Administrador' : 'Operador'}</td>
                     <td>${user.data}</td>
                     <td>
                         <button class="btn-icon edit" onclick="editarUsuario(${user.id})" title="Editar">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="btn-icon delete" onclick="excluirUsuario(${user.id})" title="Excluir Usuário">
+                        <button class="btn-icon delete" onclick="excluirUsuario(${user.id})" title="Excluir Operador">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -78,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="btn-icon edit" onclick="editarCliente(${cliente.id})" title="Editar">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="btn-icon delete" onclick="excluirCliente(${cliente.id})" title="Excluir Solicitante">
+                        <button class="btn-icon delete" onclick="excluirCliente(${cliente.id})" title="Excluir Cliente">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </td>
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const formData = new FormData(formUser);
             const data = Object.fromEntries(formData.entries());
-            data.is_admin = formUser.querySelector('[name="is_admin"]') ? formUser.querySelector('[name="is_admin"]').checked : false;
+            data.is_admin = data.nivel === 'admin';
             const userId = document.getElementById('edit-usuario-id').value;
             
             const method = userId ? 'PUT' : 'POST';
@@ -260,7 +261,7 @@ function abrirModal(tipo) {
 
 function abrirModalUsuario(nivel) {
     abrirModal('usuario');
-    document.getElementById('titulo-modal-usuario').textContent = "Cadastro de " + (nivel === 'operator' ? 'Operador' : 'Usuário');
+    document.getElementById('titulo-modal-usuario').textContent = "Cadastro de Operador";
     
     const selectNivel = document.getElementById('select-nivel-usuario');
     if(selectNivel) {
@@ -347,12 +348,11 @@ function editarUsuario(id) {
             if(user) {
                 abrirModal('usuario');
                 document.getElementById('edit-usuario-id').value = user.id;
-                document.getElementById('titulo-modal-usuario').textContent = "Editar " + (user.nivel === 'operator' ? 'Operador' : 'Usuário');
+                document.getElementById('titulo-modal-usuario').textContent = "Editar Operador";
                 const form = document.getElementById('form-usuario');
                 form.querySelector('[name="usuario"]').value = user.usuario;
                 form.querySelector('[name="email"]').value = user.email;
                 if(form.querySelector('[name="telefone"]')) form.querySelector('[name="telefone"]').value = user.telefone || '';
-                if(form.querySelector('[name="is_admin"]')) form.querySelector('[name="is_admin"]').checked = user.is_admin;
                 
                 const selectNivel = document.getElementById('select-nivel-usuario');
                 if(selectNivel) {
@@ -385,7 +385,7 @@ function editarCliente(id) {
             if(cliente) {
                 abrirModal('cliente');
                 document.getElementById('edit-cliente-id').value = cliente.id;
-                document.getElementById('titulo-modal-cliente').textContent = "Editar Solicitante";
+                document.getElementById('titulo-modal-cliente').textContent = "Editar Cliente";
                 const form = document.getElementById('form-cliente');
                 form.querySelector('[name="cliente"]').value = cliente.cliente;
                 form.querySelector('[name="email"]').value = cliente.email;
@@ -398,7 +398,7 @@ function editarCliente(id) {
 }
 
 function excluirCliente(id) {
-    showConfirmModal("Excluir Solicitante", "Tem certeza que deseja excluir este solicitante?", function() {
+    showConfirmModal("Excluir Cliente", "Tem certeza que deseja excluir este cliente?", function() {
         fetch(`/api/clients/${id}`, { method: 'DELETE' })
         .then(res => res.json())
         .then(() => document.location.reload())
